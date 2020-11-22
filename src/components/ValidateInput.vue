@@ -1,0 +1,95 @@
+<template>
+  <div class="validate-input-container pb-3">
+    <input
+    v-bind="$attrs"
+    class="form-control"
+    :class="{'is-invalid': inputRef.error}"
+    :value="inputRef.val"
+    @blur="validateInput"
+    @input="updataValue"
+    >
+    <span v-if="inputRef.error" class="invalid-feedback">{{inputRef.message}}</span>
+  </div>
+</template>
+
+<script lang='ts'>
+import { defineComponent, reactive, PropType, onMounted } from 'vue'
+import { emitter } from './ValidateForm.vue'
+const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+const pwd = /^\d{6}/
+// 定义接口规则
+interface RuleProp {
+  type: 'required' | 'email' | 'password';
+  message: string;
+}
+export type RulesProp = RuleProp[]
+export default defineComponent({
+  name: 'ValidateInput',
+  props: {
+    // 接收的参数使用类型断 言、类型断言使用上面定义的接口规则
+    rules: Array as PropType<RulesProp>,
+    modelValue: String
+  },
+  inheritAttrs: false,
+  setup (props, context) {
+    const inputRef = reactive({
+      val: props.modelValue || '',
+      // 控制span标签是否显示
+      error: false,
+      message: ''
+    })
+    const updataValue = (e: KeyboardEvent) => {
+      const targetValue = (e.target as HTMLInputElement).value
+      inputRef.val = targetValue
+      // 通过constext.emit 发送update:modelValue事件，将targetValue发送出去
+      context.emit('update:modelValue', targetValue)
+    }
+    const validateInput = () => {
+      // 判断是否有rules
+      if (props.rules) {
+        // 如果有值 则使用every()检查数组，passed的值返回给allPassed
+        const allPassed = props.rules.every(rule => {
+          let passed = true
+          // 哪个type值为false 就将那个message的值赋值给inputRef.message，如果所有判断都为true 那么将不再赋值
+          inputRef.message = rule.message
+          // 使用switch循环rule.type，判断结果是否为true,然后赋值给passed
+          switch (rule.type) {
+            case 'required':
+              passed = (inputRef.val.trim() !== '')
+              // 如果为true，那么继续向下判断；为false，则直接跳出循环
+              break
+            case 'email':
+              passed = emailReg.test(inputRef.val)
+              // 如果为true，那么向下执行，为false，那么跳出循环
+              break
+            case 'password':
+              passed = pwd.test(inputRef.val)
+              break
+            default:
+              // 默认passed为true ,结束
+              break
+          }
+          // 将passed 获取到的布尔值return出去
+          return passed
+        })
+        // 将收到的值取反之后赋值给inputRef.error，从而判断是否显示span标签
+        inputRef.error = !allPassed
+        return allPassed
+      }
+      return true
+    }
+    onMounted(() => {
+      emitter.emit('form-item-created', validateInput)
+    })
+    return {
+      inputRef,
+      validateInput,
+      updataValue
+    }
+  }
+})
+</script>
+
+<style scoped>
+
+</style>
