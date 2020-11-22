@@ -6,7 +6,7 @@
           <img :src="column.avatar" class="rounded-circle border-light w-25 my-3" :alt="column.avatar">
           <h5 class="card-title">{{column.title}}</h5>
           <p class="card-text text-left">{{column.description}}</p>
-          <a href="#" class="btn btn-outline-primary">进入专栏</a>
+          <router-link :to="`/Coulumn/${column.id}`" class="btn btn-outline-primary">进入专栏</router-link>
         </div>
 </div>
     </div>
@@ -15,8 +15,8 @@
 
 <script lang='ts'>
 import { computed, defineComponent, PropType } from 'vue'
-// 设置接口规则  将接口导出到 CoulmnList.ts中进行使用
-export interface ColumnlProps {
+// 定义接口规则
+interface ColumnlProps {
   id: number;
   title: string;
   avatar?: string;

@@ -26,6 +26,7 @@
 <script lang='ts'>
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
+import { useRouter } from 'vue-router'
 import { defineComponent, ref } from 'vue'
 export default defineComponent({
   name: 'Login',
@@ -34,6 +35,7 @@ export default defineComponent({
     ValidateForm
   },
   setup () {
+    const router = useRouter()
     const inputRef = ref()
     const inputRefpwd = ref()
     // 正则表达式邮箱验证失败时触发的提醒
@@ -55,6 +57,8 @@ export default defineComponent({
         } else if (pwdFalse) {
           inputRefpwd.value.inputRef.val = ''
         }
+      } else {
+        router.push({ name: 'Coulumn', params: { id: 1 } })
       }
     }
     return {
