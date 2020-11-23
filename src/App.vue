@@ -16,10 +16,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import GlobalHeader from '@/components/GlobalHeader.vue'
-import currentUser from '@/hooks/userProps.ts' // 调用GlobalHeader 里面定义的接口
-
+import { useStore } from 'vuex'
 export default defineComponent({
   name: 'App',
   components: {
@@ -27,6 +26,8 @@ export default defineComponent({
   },
   // setup里面可以传入两个参数 第一个参数为props 第二个参数为context
   setup () {
+    const store = useStore()
+    const currentUser = computed(() => store.state.user)
     return {
       currentUser
     }

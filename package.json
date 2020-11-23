@@ -11,7 +11,8 @@
     "axios": "^0.21.0",
     "mitt": "^2.1.0",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.0-rc.4"
+    "vue-router": "^4.0.0-rc.4",
+    "vuex": "^4.0.0-rc.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.33.0",
