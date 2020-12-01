@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
-import Coulumn from '@/views/CoulumnDetail.vue'
+import store from '@/store/store'
+import Column from '@/views/CoulumnDetail/CoulumnDetail.vue'
+import Create from '@/views/CreatePost.vue'
 
 const routerHandler = createWebHistory()
 const router = createRouter({
@@ -19,13 +21,29 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
+      meta: { redirectAlreadLogin: true }
     },
     {
-      path: '/Coulumn/:id',
-      name: 'Coulumn',
-      component: Coulumn
+      path: '/Column/:id',
+      name: 'Column',
+      component: Column
+    },
+    {
+      path: '/Create',
+      name: 'Create',
+      component: Create,
+      meta: { requiredLogin: true }
     }
   ]
+})
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiredLogin && !store.state.user.isLogin) {
+    next({ name: 'login' })
+  } else if (to.meta.redirectAlreadLogin && store.state.user.isLogin) {
+    next('/')
+  } else {
+    next()
+  }
 })
 export default router

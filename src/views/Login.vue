@@ -5,6 +5,7 @@
         <label class="form-label">邮箱地址</label>
         <validate-input
           :rules="emailRules"
+          v-model="emailVal"
           placeholder="请输入邮箱地址"
           type="text"
           ref="inputRef"
@@ -17,6 +18,7 @@
           type="password"
           placeholder="请输入密码"
           ref="inputRefpwd"
+          v-model="passwordVal"
         />
       </div>
     </validate-form>
@@ -36,6 +38,8 @@ export default defineComponent({
     ValidateForm
   },
   setup () {
+    const emailVal = ref('')
+    const passwordVal = ref('')
     const store = useStore()
     const router = useRouter()
     const inputRef = ref()
@@ -49,10 +53,15 @@ export default defineComponent({
       { type: 'required', message: '密码不能为空' },
       { type: 'password', message: '密码不能小于6位数' }
     ]
+    // 通过ValidataForm.vue发送出来的数据进行处理
     const onFormSubmit = (result: boolean) => {
+      // 如果为flase 那么清空表单
+      // 如果为true 那么路由跳转到首页，并且登录状态改为true
       if (!result) {
         const pwdFalse = inputRefpwd.value.validateInput() === false
         const emailFalse = inputRef.value.validateInput() === false
+        // 如果邮箱和密码都为flase 那么清空所有input表单，或者邮箱为flase 那么也清空表单
+        // 如果密码为flase 那么只清空密码的input表单
         if ((emailFalse && pwdFalse) || emailFalse) {
           inputRefpwd.value.inputRef.val = ''
           inputRef.value.inputRef.val = ''
@@ -60,8 +69,16 @@ export default defineComponent({
           inputRefpwd.value.inputRef.val = ''
         }
       } else {
-        router.push('/')
-        store.commit('login')
+        const payload = {
+          email: emailVal.value,
+          password: passwordVal.value
+        }
+        store.dispatch('loginAndFetch', payload).then(data => {
+          console.log(data)
+          router.push('/')
+        }).catch(e => {
+          console.log(e)
+        })
       }
     }
     return {
@@ -69,7 +86,9 @@ export default defineComponent({
       passwordRules,
       onFormSubmit,
       inputRef,
-      inputRefpwd
+      inputRefpwd,
+      emailVal,
+      passwordVal
     }
   }
 })

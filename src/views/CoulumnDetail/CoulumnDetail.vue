@@ -1,7 +1,7 @@
 <template>
   <div class="column-detail-page w-75 mx-auto container">
     <div class="row pb-5 shadow-sm p-3 mb-5 bg-white rounded">
-      <div class="col-3"><img :src="column.avatar" :alt="column.title" class=" rounded-circle rounded-lg imgborder"></div>
+      <div class="col-3"><img :src="column.avatar && column.avatar.url" :alt="column.title" class=" rounded-circle rounded-lg imgborder w-100"></div>
       <div class="mt-3 col-9">
         <h4>{{column.title}}</h4>
         <p>{{column.description}}</p>
@@ -12,9 +12,10 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent } from 'vue'
-import { testProsts, testData } from '@/hooks/ColumnlProps.ts'
-import PoshList from '@/components/PoshList.vue'
+// 单页面数据的 title
+import { defineComponent, computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import PoshList from './PoshList.vue'
 import { useRoute } from 'vue-router'
 export default defineComponent({
   name: 'CoulumnDetail',
@@ -23,9 +24,14 @@ export default defineComponent({
   },
   setup () {
     const route = useRoute()
-    const currentId = +route.params.id
-    const column = testData.find(c => c.id === currentId)
-    const list = testProsts.filter(post => post.columnId === currentId)
+    const store = useStore()
+    const currentId = route.params.id
+    onMounted(() => {
+      store.dispatch('fetchColumn', currentId)
+      store.dispatch('fetchPosts', currentId)
+    })
+    const column = computed(() => store.getters.getColumnById(currentId))
+    const list = computed(() => store.getters.getPortById(currentId))
     return {
       list,
       column

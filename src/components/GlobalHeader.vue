@@ -7,10 +7,10 @@
     </ul>
     <ul v-else class="list-inline mb-0">
       <li class="list-inline-item">
-        <dropdown :title='`你好 ${user.name}`'>
-          <dropdown-item><a href="javascript:;" class="dropdown-item">新建文章</a></dropdown-item>
-          <dropdown-item :disabled="true"><a href="javascript:;" class="dropdown-item">编辑资料</a></dropdown-item>
-          <dropdown-item><a href="javascript:;" class="dropdown-item">退出登录</a></dropdown-item>
+        <dropdown :title='`你好 ${user.nickName}`'>
+          <dropdown-item><router-link to="/create" class="dropdown-item">新建文章</router-link></dropdown-item>
+          <dropdown-item><a href="javascript:;" class="dropdown-item">编辑资料</a></dropdown-item>
+          <dropdown-item><a href="javascript:;" class="dropdown-item" @click="offClick">退出登录</a></dropdown-item>
         </dropdown>
       </li>
     </ul>
@@ -19,14 +19,11 @@
 
 <script lang='ts'>
 import { defineComponent, PropType } from 'vue'
+import { useStore } from 'vuex'
 import Dropdown from './Dropdown.vue'
 import DropdownItem from './DropdownItem.vue'
-// 给登录按钮定义接口类型
-interface UserProps {
-  isLogin: boolean;
-  name?: string;
-  id?: number;
-}
+import { UserProps } from '@/store/store'
+
 export default defineComponent({
   name: 'GlobalHeader',
   components: {
@@ -37,6 +34,16 @@ export default defineComponent({
     user: {
       type: Object as PropType<UserProps>,
       required: true
+    }
+  },
+  setup () {
+    const store = useStore()
+    const offClick = () => {
+      store.state.user.isLogin = false
+      store.state.token = ''
+    }
+    return {
+      offClick
     }
   }
 })

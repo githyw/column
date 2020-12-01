@@ -2,12 +2,22 @@
   <div class="validate-input-container pb-3">
     <input
     v-bind="$attrs"
+    v-if="tag !== 'textarea'"
     class="form-control"
     :class="{'is-invalid': inputRef.error}"
     :value="inputRef.val"
     @blur="validateInput"
     @input="updataValue"
-    >
+    />
+    <textarea
+      v-else
+      v-bind="$attrs"
+      class="form-control"
+      :class="{'is-invalid': inputRef.error}"
+      :value="inputRef.val"
+      @blur="validateInput"
+      @input="updataValue"
+    />
     <span v-if="inputRef.error" class="invalid-feedback">{{inputRef.message}}</span>
   </div>
 </template>
@@ -19,16 +29,21 @@ const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0
 const pwd = /^\d{6}/
 // 定义接口规则
 interface RuleProp {
-  type: 'required' | 'email' | 'password';
+  type: 'required' | 'email' | 'password' | 'title' | 'content';
   message: string;
 }
 export type RulesProp = RuleProp[]
+export type TagType = 'input' | 'textarea'
 export default defineComponent({
   name: 'ValidateInput',
   props: {
     // 接收的参数使用类型断 言、类型断言使用上面定义的接口规则
     rules: Array as PropType<RulesProp>,
-    modelValue: String
+    modelValue: String,
+    tag: {
+      type: String as PropType<TagType>,
+      default: 'input'
+    }
   },
   inheritAttrs: false,
   setup (props, context) {
@@ -65,6 +80,12 @@ export default defineComponent({
             case 'password':
               passed = pwd.test(inputRef.val)
               break
+            case 'title':
+              passed = (inputRef.val.trim() !== '')
+              break
+            case 'content':
+              passed = (inputRef.val.trim() !== '')
+              break
             default:
               // 默认passed为true ,结束
               break
@@ -79,6 +100,7 @@ export default defineComponent({
       return true
     }
     onMounted(() => {
+      // 将函数发送到ValidataForm.vue中
       emitter.emit('form-item-created', validateInput)
     })
     return {

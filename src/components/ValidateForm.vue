@@ -19,20 +19,24 @@ export default defineComponent({
   emits: ['form-submit'],
   setup (props, context) {
     let funcArr: ValidateFunc[] = []
-    const submitForm = () => {
-      const result = funcArr.map(func => func()).every(result => result)
-      console.log(funcArr.map(func => func()))
-      context.emit('form-submit', result)
-      console.log(result)
-    }
+    // 对接收过来的函数进行处理，传进来的都是函数
     const callback = (func?: ValidateFunc) => {
       if (func !== undefined) {
+        // 将所有值push到一个新的数组中
         funcArr.push(func)
-        console.log(callback())
       }
     }
+    const submitForm = () => {
+      // 1.将funcArr的数组中的函数使用map调用返回一个布尔值的数组
+      // 2.使用every测试这个数组中所有元素是否通过(true)，全部通过则返回true，只要有一个不通过则返回false
+      const result = funcArr.map(func => func()).every(result => result)
+      // 将测试出来的布尔值发送出去
+      context.emit('form-submit', result)
+    }
+    // 接收ValidataInput.vue传过来的函数
     emitter.on('form-item-created', callback)
     onUnmounted(() => {
+      // 结束之后清除数据
       emitter.off('form-item-created', callback)
       funcArr = []
     })
