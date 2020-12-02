@@ -69,9 +69,6 @@ const store = createStore<GlobalDataProps>({
     user: { isLogin: false }
   },
   mutations: {
-    // login (state) {
-    //   state.user = { ...state.user, isLogin: true, name: '郝莹旺' }
-    // },
     createPost (state, newPost) {
       state.posts.push(newPost)
     },

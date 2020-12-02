@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue'
 import store from '@/store/store'
 import Column from '@/views/CoulumnDetail/CoulumnDetail.vue'
 import Create from '@/views/CreatePost.vue'
+import Signup from '@/views/Signup.vue'
 
 const routerHandler = createWebHistory()
 const router = createRouter({
@@ -23,6 +24,11 @@ const router = createRouter({
       name: 'login',
       component: Login,
       meta: { redirectAlreadLogin: true }
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: Signup
     },
     {
       path: '/Column/:id',

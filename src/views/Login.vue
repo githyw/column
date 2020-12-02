@@ -1,5 +1,6 @@
 <template>
-  <div class="Login">
+  <div class="login-page mx-auto p-3 w-330">
+    <h5 class="my-4 text-center">登录页面</h5>
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">邮箱地址</label>
@@ -20,7 +21,13 @@
           ref="inputRefpwd"
           v-model="passwordVal"
         />
+        <div class="form-text w-330">
+          <router-link to="/signup">还没有账户？去注册一个新的吧！</router-link>
+        </div>
       </div>
+      <template #submit>
+        <button type="submit" class="btn btn-primary btn-block btn-large">登录</button>
+      </template>
     </validate-form>
   </div>
 </template>
@@ -28,6 +35,7 @@
 <script lang='ts'>
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
+import createMessage from '@/hooks/createMessage'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { defineComponent, ref } from 'vue'
@@ -73,9 +81,11 @@ export default defineComponent({
           email: emailVal.value,
           password: passwordVal.value
         }
-        store.dispatch('loginAndFetch', payload).then(data => {
-          console.log(data)
-          router.push('/')
+        store.dispatch('loginAndFetch', payload).then(() => {
+          createMessage('登录成功,1秒后跳转到首页', 'success', 1500)
+          setTimeout(() => {
+            router.push('/')
+          }, 1500)
         }).catch(e => {
           console.log(e)
         })
@@ -95,4 +105,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
+  .w-330 {
+    width: 330px;
+  }
 </style>

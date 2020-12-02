@@ -3,7 +3,7 @@
    <slot name="default"></slot>
    <div class="submit-area" @click.prevent="submitForm">
      <slot name="submit">
-       <button type="submit" class="btn btn-primary">提交</button>
+       <button type="submit" class="btn btn-primary w-330">提交</button>
      </slot>
    </div>
  </form>
@@ -47,5 +47,8 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
+  button{
+    width: 100%;
+  }
 </style>

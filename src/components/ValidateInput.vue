@@ -1,5 +1,5 @@
 <template>
-  <div class="validate-input-container pb-3">
+  <div class="validate-input-container pb-3 position-relative">
     <input
     v-bind="$attrs"
     v-if="tag !== 'textarea'"
@@ -18,7 +18,7 @@
       @blur="validateInput"
       @input="updataValue"
     />
-    <span v-if="inputRef.error" class="invalid-feedback">{{inputRef.message}}</span>
+    <span v-if="inputRef.error" class="invalid-feedback position-absolute mt-1">{{inputRef.message}}</span>
   </div>
 </template>
 
@@ -26,11 +26,12 @@
 import { defineComponent, reactive, PropType, onMounted } from 'vue'
 import { emitter } from './ValidateForm.vue'
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-const pwd = /^\d{6}/
+const pwd = /[\d\w\S]{6}/
 // 定义接口规则
-interface RuleProp {
-  type: 'required' | 'email' | 'password' | 'title' | 'content';
+export interface RuleProp {
+  type: 'required' | 'email' | 'password' | 'title' | 'content' | 'reuse';
   message: string;
+  validator?: () => boolean;
 }
 export type RulesProp = RuleProp[]
 export type TagType = 'input' | 'textarea'
@@ -85,6 +86,9 @@ export default defineComponent({
               break
             case 'content':
               passed = (inputRef.val.trim() !== '')
+              break
+            case 'reuse':
+              passed = rule.validator ? rule.validator() : true
               break
             default:
               // 默认passed为true ,结束

@@ -1,17 +1,18 @@
 <template>
-<teleport to="#back">
-  <div class="d-flex justify-content-center align-items-center h-100 loading-container"
-    :style="{backgroundColor:background || ''}"
-  >
-    <div class="loading-content">
-      <div class="spinner-border text-primary" role="status"></div>
-      <div v-if="text" class="text-primary small">{{text}}</div>
+  <teleport to="#back">
+    <div class="d-flex justify-content-center align-items-center h-100 loading-container"
+      :style="{backgroundColor:background || ''}"
+    >
+      <div class="loading-content">
+        <div class="spinner-border text-primary" role="status"></div>
+        <div v-if="text" class="text-primary small">{{text}}</div>
+      </div>
     </div>
-  </div>
-</teleport>
+  </teleport>
 </template>
 
 <script lang='ts'>
+import useDOMCreate from '@/hooks/useDOMCreate'
 import { defineComponent, onUnmounted } from 'vue'
 export default defineComponent({
   name: 'Loader',
@@ -24,12 +25,8 @@ export default defineComponent({
     }
   },
   setup () {
-    const node = document.createElement('div')
-    node.id = 'back'
-    document.body.appendChild(node)
-    onUnmounted(() => {
-      document.body.removeChild(node)
-    })
+    // 创建DOM节点
+    useDOMCreate('back')
   }
 })
 </script>

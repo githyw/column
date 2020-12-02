@@ -3,7 +3,7 @@
     <router-link class="navbar-brand" to="/">首页</router-link>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item"><router-link to="/login" class="btn btn-outline-light my-2">登录</router-link></li>
-      <li class="list-inline-item"><a href="/login" class="btn btn-outline-light my-2">注册</a></li>
+      <li class="list-inline-item"><router-link to="/signup" class="btn btn-outline-light my-2">注册</router-link></li>
     </ul>
     <ul v-else class="list-inline mb-0">
       <li class="list-inline-item">
@@ -23,6 +23,7 @@ import { useStore } from 'vuex'
 import Dropdown from './Dropdown.vue'
 import DropdownItem from './DropdownItem.vue'
 import { UserProps } from '@/store/store'
+import axios from 'axios'
 
 export default defineComponent({
   name: 'GlobalHeader',
@@ -41,6 +42,8 @@ export default defineComponent({
     const offClick = () => {
       store.state.user.isLogin = false
       store.state.token = ''
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common.Authorization
     }
     return {
       offClick

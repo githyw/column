@@ -14,19 +14,16 @@ axios.interceptors.request.use(config => {
     config.data.append('icode', '1FC5A700DA67B415')
   } else if (config.method === 'post') {
     config.data = { ...config.data, icode: '1FC5A700DA67B415' }
-    console.log(config.data)
   } else {
     config.params = { ...config.params, icode: '1FC5A700DA67B415' }
-    console.log(config.params)
   }
-  console.log(config)
+  store.commit('setError', { status: false, message: '' })
   return config
 })
 // 响应拦截
 axios.interceptors.response.use(config => {
   // 隐藏加载时旋转动画
   store.commit('setLoading', false)
-  store.commit('setError', { status: false, message: '' })
   return config
 }, e => {
   const { error } = e.response.data
