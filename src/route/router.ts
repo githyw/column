@@ -5,6 +5,8 @@ import store from '@/store/store'
 import Column from '@/views/CoulumnDetail/CoulumnDetail.vue'
 import Create from '@/views/CreatePost.vue'
 import Signup from '@/views/Signup.vue'
+import PostDetail from '@/views/CoulumnDetail/PostDetail.vue'
+import axios from 'axios'
 
 const routerHandler = createWebHistory()
 const router = createRouter({
@@ -31,25 +33,53 @@ const router = createRouter({
       component: Signup
     },
     {
-      path: '/Column/:id',
-      name: 'Column',
+      path: '/column/:id',
+      name: 'column',
       component: Column
     },
     {
-      path: '/Create',
-      name: 'Create',
+      path: '/post/:id',
+      name: 'post',
+      component: PostDetail
+    },
+    {
+      path: '/create',
+      name: 'create',
       component: Create,
       meta: { requiredLogin: true }
     }
   ]
 })
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiredLogin && !store.state.user.isLogin) {
-    next({ name: 'login' })
-  } else if (to.meta.redirectAlreadLogin && store.state.user.isLogin) {
-    next('/')
+  const { user, token } = store.state
+  const { redirectAlreadLogin, requiredLogin } = to.meta
+  if (!user.isLogin) {
+    if (token) {
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      store.dispatch('fetchCurrentUser').then(() => {
+        if (redirectAlreadLogin) {
+          next('/')
+        } else {
+          next()
+        }
+      }).catch(e => {
+        console.log(e)
+        store.commit('logout')
+        next('login')
+      })
+    } else {
+      if (requiredLogin) {
+        next('login')
+      } else {
+        next()
+      }
+    }
   } else {
-    next()
+    if (redirectAlreadLogin) {
+      next('/')
+    } else {
+      next()
+    }
   }
 })
 export default router

@@ -1,7 +1,7 @@
 <template>
  <form class="validate-form-container">
    <slot name="default"></slot>
-   <div class="submit-area" @click.prevent="submitForm">
+   <div class="submit-area d-flex justify-content-center" @click.prevent="submitForm">
      <slot name="submit">
        <button type="submit" class="btn btn-primary w-330">提交</button>
      </slot>

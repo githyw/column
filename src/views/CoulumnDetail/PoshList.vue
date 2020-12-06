@@ -2,7 +2,7 @@
   <div class="post-list">
     <article v-for="post in list" :key="post._id" class="card mb-3 shadow-sm">
       <div class="card-body">
-        <h4>{{post.title}}</h4>
+        <router-link :to="`/post/${post._id}`" class="tdn"><h4>{{post.title}}</h4></router-link>
         <div class="row my-3 align-items-center">
           <div v-if="post.image" class="col-4">
             <img :src="post.image.url" :alt="post.title" class="rounded-lg w-100">
@@ -11,6 +11,7 @@
         </div>
         <span class="text-muted">{{post.createdAt}}</span>
       </div>
+      <post-detail :posts="post" v-if="false" :key="post._id"></post-detail>
     </article>
   </div>
 </template>
@@ -18,9 +19,13 @@
 <script lang='ts'>
 // 单页面数据的List
 import { PostProps } from '../../store/store'
+import PostDetail from './PostDetail.vue'
 import { defineComponent, PropType } from 'vue'
 export default defineComponent({
   name: 'PoshList',
+  components: {
+    PostDetail
+  },
   props: {
     list: {
       request: true,
@@ -31,4 +36,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
+  .tdn{
+    text-decoration: none;
+    color: black;
+  }
 </style>

@@ -11,11 +11,12 @@ axios.interceptors.request.use(config => {
   // 显示加载时旋转动画
   store.commit('setLoading', true)
   if (config.data instanceof FormData) {
-    config.data.append('icode', '1FC5A700DA67B415')
+    config.data.append('icode', '0BC9ABB4AD85B874')
+    store.commit('setLoading', false)
   } else if (config.method === 'post') {
-    config.data = { ...config.data, icode: '1FC5A700DA67B415' }
+    config.data = { ...config.data, icode: '0BC9ABB4AD85B874' }
   } else {
-    config.params = { ...config.params, icode: '1FC5A700DA67B415' }
+    config.params = { ...config.params, icode: '0BC9ABB4AD85B874' }
   }
   store.commit('setError', { status: false, message: '' })
   return config

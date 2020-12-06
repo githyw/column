@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <loader text="加载中..." v-if="isLoading"></loader>
     <global-header :user="currentUser"></global-header>
+    <loader text="加载中..." v-if="isLoading"></loader>
     <router-view></router-view>
   </div>
   <footer class="text-center py-4 text-secondary bg-light mt-auto">
@@ -17,13 +17,12 @@
   </footer>
 </template>
 <script lang="ts">
-import { defineComponent, computed, onMounted, watch } from 'vue'
+import { defineComponent, computed, watch } from 'vue'
 import Loader from '@/components/Loader.vue'
 import GlobalHeader from '@/components/GlobalHeader.vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from './store/store'
 import createMessage from '@/hooks/createMessage'
-import axios from 'axios'
 export default defineComponent({
   name: 'App',
   components: {
@@ -35,14 +34,7 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const isLoading = computed(() => store.state.Loading)
     const currentUser = computed(() => store.state.user)
-    const token = computed(() => store.state.token)
     const error = computed(() => store.state.error)
-    onMounted(() => {
-      if (!currentUser.value.isLogin && token.value) {
-        axios.defaults.headers.common.Authorization = `Bearer ${token.value}`
-        store.dispatch('fetchCurrentUser')
-      }
-    })
     watch(() => error.value.status, () => {
       const { status, message } = error.value
       if (status && message) {
