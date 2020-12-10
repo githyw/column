@@ -46,7 +46,7 @@
         </div>
       </div>
       <template #submit>
-        <button type="submit" class="btn btn-primary btn-block btn-large">注册</button>
+        <button type="submit" class="btn btn-primary btn-block btn-large bes">注册</button>
       </template>
     </validate-form>
   </div>
@@ -102,9 +102,10 @@ export default defineComponent({
           password: formData.password,
           nickName: formData.nickName
         }
+        // 注册账号并跳转登录页面
         axios.post('/users/', payload).then(data => {
           console.log(data)
-          createMessage('注册成功 正在跳转登录页面', 'success', 1000)
+          createMessage('注册成功 即将跳转登录页面', 'success', 1000)
           setTimeout(() => {
             router.push('/login')
           }, 1000)
@@ -126,5 +127,8 @@ export default defineComponent({
 <style scoped>
   .w-330 {
     width: 330px;
+  }
+  .bes{
+    width: 100%;
   }
 </style>

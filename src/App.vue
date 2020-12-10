@@ -1,6 +1,6 @@
 <template>
+  <global-header :user="currentUser"></global-header>
   <div class="container">
-    <global-header :user="currentUser"></global-header>
     <loader text="加载中..." v-if="isLoading"></loader>
     <router-view></router-view>
   </div>

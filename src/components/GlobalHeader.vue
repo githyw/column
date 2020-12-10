@@ -9,6 +9,7 @@
       <li class="list-inline-item">
         <dropdown :title='`你好 ${user.nickName}`'>
           <dropdown-item><router-link to="/create" class="dropdown-item">新建文章</router-link></dropdown-item>
+          <dropdown-item><router-link :to="`/Column/5f4db92abb821789a5490ed3`" class="dropdown-item">我的专栏</router-link></dropdown-item>
           <dropdown-item><a href="javascript:;" class="dropdown-item">编辑资料</a></dropdown-item>
           <dropdown-item><a href="javascript:;" class="dropdown-item" @click="offClick">退出登录</a></dropdown-item>
         </dropdown>
@@ -18,7 +19,7 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { useStore } from 'vuex'
 import Dropdown from './Dropdown.vue'
 import DropdownItem from './DropdownItem.vue'
@@ -37,8 +38,9 @@ export default defineComponent({
       required: true
     }
   },
-  setup () {
+  setup (props) {
     const store = useStore()
+    console.log(props.user)
     const offClick = () => {
       store.state.user.isLogin = false
       store.state.token = ''

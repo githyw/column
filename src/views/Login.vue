@@ -26,7 +26,7 @@
         </div>
       </div>
       <template #submit>
-        <button type="submit" class="btn btn-primary btn-block btn-large">登录</button>
+        <button type="submit" class="btn btn-primary btn-block btn-large bes">登录</button>
       </template>
     </validate-form>
   </div>
@@ -45,7 +45,7 @@ export default defineComponent({
     ValidateInput,
     ValidateForm
   },
-  setup () {
+  setup (props, content) {
     const emailVal = ref('')
     const passwordVal = ref('')
     const store = useStore()
@@ -81,11 +81,13 @@ export default defineComponent({
           email: emailVal.value,
           password: passwordVal.value
         }
-        store.dispatch('loginAndFetch', payload).then(() => {
-          createMessage('登录成功,1秒后跳转到首页', 'success', 1500)
+        store.dispatch('loginAndFetch', payload).then((e) => {
+          console.log(e.data.column)
+          content.emit('login', e.data.column)
+          createMessage('登录成功,即将跳转到首页', 'success', 1000)
           setTimeout(() => {
             router.push('/')
-          }, 1500)
+          }, 1000)
         }).catch(e => {
           console.log(e)
         })
@@ -107,5 +109,8 @@ export default defineComponent({
 <style scoped>
   .w-330 {
     width: 330px;
+  }
+  .bes{
+    width: 100%;
   }
 </style>

@@ -38,9 +38,10 @@ const router = createRouter({
       component: Column
     },
     {
-      path: '/post/:id',
-      name: 'post',
-      component: PostDetail
+      path: '/posts/:id',
+      name: 'posts',
+      component: PostDetail,
+      meta: { requiredPosts: true }
     },
     {
       path: '/create',
@@ -53,6 +54,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const { user, token } = store.state
   const { redirectAlreadLogin, requiredLogin } = to.meta
+  localStorage.setItem('routerParams', JSON.stringify(to.params))
   if (!user.isLogin) {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`

@@ -48,7 +48,4 @@ export default defineComponent({
 </script>
 
 <style>
-  button{
-    width: 100%;
-  }
 </style>

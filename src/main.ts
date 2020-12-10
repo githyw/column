@@ -13,7 +13,7 @@ axios.interceptors.request.use(config => {
   if (config.data instanceof FormData) {
     config.data.append('icode', '0BC9ABB4AD85B874')
     store.commit('setLoading', false)
-  } else if (config.method === 'post') {
+  } else if (config.method === 'post' || config.method === 'patch') {
     config.data = { ...config.data, icode: '0BC9ABB4AD85B874' }
   } else {
     config.params = { ...config.params, icode: '0BC9ABB4AD85B874' }

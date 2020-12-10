@@ -7,7 +7,7 @@
         <p>{{column.description}}</p>
       </div>
     </div>
-    <posh-list :list="list"></posh-list>
+    <posh-list :list="list" ></posh-list>
   </div>
 </template>
 
@@ -28,6 +28,8 @@ export default defineComponent({
     const route = useRoute()
     const store = useStore()
     const currentId = route.params.id
+    const User = store.state.user
+    console.log(User)
     console.log(route)
     onMounted(() => {
       store.dispatch('fetchColumn', currentId)

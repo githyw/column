@@ -1,5 +1,5 @@
 import { createStore, Commit } from 'vuex'
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 export interface ResponseType<P = {}> {
   code: number;
   msg: string;
@@ -36,10 +36,10 @@ export interface PostProps {
   content?: string;
   image?: ImageProps | string;
   createdAt?: string;
-  author?: string;
-  column: string;
+  author?: string | UserProps;
+  column?: string;
   avatar?: ImageProps;
-
+  isHTML?: boolean;
 }
 export interface GlobalErrorProps {
   status?: boolean;
@@ -54,14 +54,9 @@ export interface GlobalDataProps {
   posts: PostProps[];
   user: UserProps;
 }
-// 封装一个请求函数
-const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
-  const { data } = await axios.get(url)
-  commit(mutationName, data)
-  return data
-}
-const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: string) => {
-  const { data } = await axios.post(url, payload)
+// 封装一个请求函数,通过method控制获取的是post请求还是get请求默认get请求
+const asyncAndCOmmit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }) => {
+  const { data } = await axios(url, config)
   commit(mutationName, data)
   return data
 }
@@ -82,7 +77,7 @@ const store = createStore<GlobalDataProps>({
   mutations: {
     createPost (state, newPost) {
       state.posts.push(newPost.data)
-      console.log(state.posts)
+      console.log(newPost.data)
     },
     fetchColumns (state, rawData) {
       state.columns = rawData.data.list
@@ -93,23 +88,42 @@ const store = createStore<GlobalDataProps>({
     fetchPosts (state, rawData) {
       state.posts = rawData.data.list
     },
+    fetchPost (state, rawData) {
+      state.posts = [rawData.data]
+    },
+    deletePost (state, { data }) {
+      state.posts = state.posts.filter(post => post._id !== data._id)
+    },
+    updatePost (state, { data }) {
+      console.log(data)
+      state.posts = state.posts.map(post => {
+        console.log(post)
+        if (post._id === data._id) {
+          return data
+        } else {
+          return post
+        }
+      })
+    },
+    // 控制加载页面动画
     setLoading (state, status) {
       state.Loading = status
     },
     setError (state, e: GlobalErrorProps) {
       state.error = e
     },
+    // 控制登录状态
     fetchCurrentUser (state, rawData) {
       state.user = { isLogin: true, ...rawData.data }
     },
+    // 获取登录账号的token并将其存入浏览器缓存中
     login (state, rawData) {
       const { token } = rawData.data
       state.token = token
-      console.log(rawData)
       localStorage.setItem('token', token)
-      console.log(token)
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
+    // 退出登陆时清除token并清除浏览器缓存中的token
     logout (state) {
       state.token = ''
       localStorage.removeItem('token')
@@ -118,25 +132,37 @@ const store = createStore<GlobalDataProps>({
   },
   actions: {
     fetchColumns (context) {
-      return getAndCommit('/columns', 'fetchColumns', context.commit)
+      return asyncAndCOmmit('/columns', 'fetchColumns', context.commit)
     },
     fetchColumn ({ commit }, cid) {
-      return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
+      return asyncAndCOmmit(`/columns/${cid}`, 'fetchColumn', commit)
     },
     fetchPosts ({ commit }, cid) {
-      return getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+      return asyncAndCOmmit(`/columns/${cid}/posts`, 'fetchPosts', commit)
     },
     fetchPost ({ commit }, cid) {
-      return getAndCommit(`/post/${cid}`, 'fetchPost', commit)
+      return asyncAndCOmmit(`/posts/${cid}`, 'fetchPost', commit)
+    },
+    // 更新文章单个页面数据
+    updatePost ({ commit }, { id, payload }) {
+      console.log(id, payload)
+      return asyncAndCOmmit(`/posts/${id}`, 'updatePost', commit, {
+        method: 'patch',
+        data: payload
+      })
     },
     fetchCurrentUser ({ commit }) {
-      return getAndCommit('/user/current', 'fetchCurrentUser', commit)
+      return asyncAndCOmmit('/user/current', 'fetchCurrentUser', commit)
     },
     login ({ commit }, payload) {
-      return postAndCommit('/user/login', 'login', commit, payload)
+      return asyncAndCOmmit('/user/login', 'login', commit, { method: 'post', data: payload })
     },
+    // 新建文章页面数据
     createPost ({ commit }, payload) {
-      return postAndCommit('/posts', 'createPost', commit, payload)
+      return asyncAndCOmmit('/posts', 'createPost', commit, { method: 'post', data: payload })
+    },
+    deletePost ({ commit }, id) {
+      return asyncAndCOmmit(`/posts/${id}`, 'deletePost', commit, { method: 'delete' })
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
@@ -145,16 +171,22 @@ const store = createStore<GlobalDataProps>({
     }
   },
   getters: {
+    // 通过id获取columns数据
     getColumnById: (state) => (id: string) => {
       console.log(id)
       console.log(state.columns)
       return state.columns.find(e => e._id === id)
     },
+    // 通过columns的id获取所有posts的数据列表
     getPortById: (state) => (cid: string) => {
       return state.posts.filter(post => post.column === cid)
     },
+    // 通过id获取posts数据
     getPostById: (state) => (cid: string) => {
-      return state.posts.find(e => e._id === cid)
+      console.log(state.posts)
+      const id = state.posts.find(e => e._id === cid)
+      console.log(id)
+      return id
     }
   }
 })

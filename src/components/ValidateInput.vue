@@ -7,23 +7,22 @@
     :class="{'is-invalid': inputRef.error}"
     :value="inputRef.val"
     @blur="validateInput"
-    @input="updataValue"
+    v-model="inputRef.val"
     />
     <textarea
       v-else
       v-bind="$attrs"
       class="form-control"
       :class="{'is-invalid': inputRef.error}"
-      :value="inputRef.val"
       @blur="validateInput"
-      @input="updataValue"
+      v-model="inputRef.val"
     />
     <span v-if="inputRef.error" class="invalid-feedback position-absolute mt-1">{{inputRef.message}}</span>
   </div>
 </template>
 
 <script lang='ts'>
-import { defineComponent, reactive, PropType, onMounted } from 'vue'
+import { defineComponent, reactive, PropType, onMounted, watch, computed } from 'vue'
 import { emitter } from './ValidateForm.vue'
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 const pwd = /[\d\w\S]{6}/
@@ -49,17 +48,16 @@ export default defineComponent({
   inheritAttrs: false,
   setup (props, context) {
     const inputRef = reactive({
-      val: props.modelValue || '',
+      val: computed({
+        get: () => props.modelValue || '',
+        set: val => {
+          context.emit('update:modelValue', val)
+        }
+      }),
       // 控制span标签是否显示
       error: false,
       message: ''
     })
-    const updataValue = (e: KeyboardEvent) => {
-      const targetValue = (e.target as HTMLInputElement).value
-      inputRef.val = targetValue
-      // 通过constext.emit 发送update:modelValue事件，将targetValue发送出去
-      context.emit('update:modelValue', targetValue)
-    }
     const validateInput = () => {
       // 判断是否有rules
       if (props.rules) {
@@ -109,8 +107,7 @@ export default defineComponent({
     })
     return {
       inputRef,
-      validateInput,
-      updataValue
+      validateInput
     }
   }
 })

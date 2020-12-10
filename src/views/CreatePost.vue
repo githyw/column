@@ -1,17 +1,18 @@
 <template>
   <div class="create-post-page">
-    <h4>新建文章</h4>
+    <h4>{{isEditMode? '编辑文章' : '新建文章'}}</h4>
     <uploader
       action="/upload"
       :befor-upload="uploadCheck"
       @file-uploaded="handleFileUploaded"
+      :uploaded="uploadedData"
       class="d-flex justify-content-center bg-light text-secondary w-100 my-4"
     >
     <template #uploaded="dataProps">
-      <img :src="dataProps.uploadedData.data.url" width="500">
+      <img :src="dataProps.uploadedData.data.url" width="500" class="h-200">
     </template>
     <template #default>
-      <h2 class="file-upload">点击上传头图</h2>
+      <h2 class="file-upload h-200">点击上传头图</h2>
     </template>
     <template #loading>
       <div class="d-flex">
@@ -43,7 +44,7 @@
         />
       </div>
       <template #submit>
-        <button type="submit" class="btn btn-primary btn-block btn-large w-330">提交</button>
+        <button type="submit" class="btn btn-primary btn-block btn-large w-330">{{isEditMode? '更新文章' : '发布文章'}}</button>
       </template>
     </validate-form>
   </div>
@@ -56,7 +57,7 @@ import Uploader from '@/components/Uploader.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { beforeUploadCheck } from '@/hooks/helper'
-import { GlobalDataProps, ImageProps, PostProps, ResponseType, UserProps } from '@/store/store'
+import { GlobalDataProps, ImageProps, PostProps, ResponseType } from '@/store/store'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import createMessage from '@/hooks/createMessage'
 export default defineComponent({
@@ -81,6 +82,9 @@ export default defineComponent({
     const contentRules: RulesProp = [
       { type: 'content', message: '文章详情不能为空' }
     ]
+    const columns = store.state.columns
+    console.log(columns)
+
     // 获取照片id展示图片
     const handleFileUploaded = (rawData: ResponseType<ImageProps>) => {
       if (rawData.data._id) {
@@ -91,6 +95,7 @@ export default defineComponent({
       if (result) {
         // 将用户id(_id) 和页面id(column)
         const { column, _id } = store.state.user
+        console.log(column + '-------' + _id)
         if (column) {
           const newPost: PostProps = {
             title: titleVal.value,
@@ -102,13 +107,23 @@ export default defineComponent({
             newPost.image = imageID
             console.log(imageID)
           }
-          store.dispatch('createPost', newPost).then((e) => {
+          // 新建文章提交数据 if === createPost则提交新数据 esle === updatePost则更新数据
+          const actionName = isEditMode ? 'updatePost' : 'createPost'
+          const sendData = isEditMode ? {
+            id: route.query.id,
+            payload: newPost
+          } : newPost
+          store.dispatch(actionName, sendData).then((e) => {
             console.log(e)
-            createMessage('发表成功，2秒后跳转到文章', 'success', 2000)
+            createMessage('发表成功，即将跳转到文章', 'success', 1000)
             setTimeout(() => {
               router.push({ name: 'column', params: { id: column } })
-            }, 2000)
-          }).catch(e => console.log(e))
+            }, 1000)
+          }).catch(e => {
+            console.log(e)
+            console.log(actionName)
+            console.log(sendData)
+          })
         }
       }
     }
@@ -148,7 +163,8 @@ export default defineComponent({
       uploadedData,
       onFileUploaded,
       uploadCheck,
-      handleFileUploaded
+      handleFileUploaded,
+      isEditMode
     }
   }
 })
@@ -160,6 +176,10 @@ export default defineComponent({
   }
   .file-upload {
     cursor: pointer;
+  }
+  .h-200{
+    height: 200px;
+    overflow: hidden;
   }
   img {
     width: 100%;
