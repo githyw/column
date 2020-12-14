@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/Home.vue'
-import Login from '@/views/Login.vue'
-import store from '@/store/store'
-import Column from '@/views/CoulumnDetail/CoulumnDetail.vue'
-import Create from '@/views/CreatePost.vue'
-import Signup from '@/views/Signup.vue'
-import PostDetail from '@/views/CoulumnDetail/PostDetail.vue'
 import axios from 'axios'
+import store from '@/store/store'
+const Home = () => import('@/views/Home.vue')
+const Login = () => import('@/views/Login.vue')
+const Column = () => import('@/views/CoulumnDetail/CoulumnDetail.vue')
+const Create = () => import('@/views/CreatePost.vue')
+const Signup = () => import('@/views/Signup.vue')
+const PostDetail = () => import('@/views/CoulumnDetail/PostDetail.vue')
 
 const routerHandler = createWebHistory()
 const router = createRouter({
