@@ -8,7 +8,7 @@
     <h4 class="d-flex justify-content-center">发现精彩</h4>
     <coulmn-list :list='list'></coulmn-list>
   </div>
-  <button class="btn btn-outline-primary my-2 mb-5 btn-block w-25 mx-auto d-flex justify-content-center" @click="loadMorePage" v-if="!islastPage">加载更多</button>
+  <button class="btn btn-outline-primary my-2 mb-5 btn-block w-25 mx-auto d-flex justify-content-center" @click="loadMorePage" v-if="islastPage">加载更多</button>
 </template>
 
 <script lang='ts'>
@@ -26,11 +26,12 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const currentPage = computed(() => store.state.columns.currentPage)
     const total = computed(() => store.state.columns.total)
+    const islastPage = computed(() => store.state.posts.islastPage)
     onMounted(() => {
-      store.dispatch('fetchColumns', { pageSize: 3 })
+      store.dispatch('fetchColumns', { pageSize: 6 })
     })
     const list = computed(() => store.getters.getColumns)
-    const { loadMorePage, islastPage } = useLoadMore('fetchColumns', total, { currentPage: (currentPage.value ? currentPage.value + 1 : 2), pageSize: 3 })
+    const { loadMorePage } = useLoadMore('fetchColumns', total, { currentPage: (currentPage.value ? currentPage.value + 1 : 3), pageSize: 3 })
     return {
       list,
       loadMorePage,

@@ -6,6 +6,11 @@
            @modal-on-confirm="hideAndDelete">
       <p>确定要删除这篇文章吗？</p>
     </modal>
+    <div class="bgc">
+      <router-link to="/home" class="bgc-a">首页 </router-link>/
+      <router-link :to="`/column/${columnId}`" class="bgc-a">专栏首页 </router-link>/
+      <span class="bgc-b">{{posts.title}}</span>
+    </div>
     <div v-if="posts.image">
       <img :src="posts.image.url" :alt="posts.title" class="w-500">
     </div>
@@ -48,7 +53,8 @@ export default defineComponent({
     const md = new MarkdownIt()
     const currentId = route.params.id
     const modalIsVisible = ref(false)
-    const User = store.state.user
+    const User = computed(() => store.state.user)
+    console.log(User)
     onMounted(() => {
       store.dispatch('fetchPost', currentId).then(e => {
         console.log(e)
@@ -64,6 +70,7 @@ export default defineComponent({
       }
     })
     const column = computed(() => store.getters.getColumnById(posts.value.column))
+    const columnId = column.value._id
     console.log(column)
     console.log('post:' + currentId)
     console.log('posts:' + posts.value)
@@ -78,7 +85,7 @@ export default defineComponent({
     })
     console.log(currentImageUrl)
     const showEditArea = computed(() => {
-      const { isLogin, _id } = User
+      const { isLogin, _id } = User.value
       if (posts.value && posts.value.author && isLogin) {
         const postAuthor = posts.value.author._id as UserProps
         return postAuthor === _id
@@ -107,13 +114,29 @@ export default defineComponent({
       column,
       currentImageUrl,
       modalIsVisible,
-      hideAndDelete
+      hideAndDelete,
+      columnId
     }
   }
 })
 </script>
 
 <style scoped>
+  .bgc{
+    background-color: #ededed;
+    padding: 10px 10px;
+    margin-bottom: 10px;
+  }
+  .bgc-a{
+    text-decoration: none;
+    color: black;
+  }
+  .bgc-a:hover{
+    color: red;
+  }
+  .bgc-b{
+    color: #cccccc;
+  }
   .w-690 {
     width: 690px;
     margin: 0 auto;

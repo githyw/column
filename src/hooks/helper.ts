@@ -1,4 +1,5 @@
 import { ColumnlProps, ImageProps, UserProps } from '@/store/store'
+import createMessage from '@/hooks/createMessage'
 export function generateFitUrl (data: ImageProps, width: number, height: number, format = ['m_pad']) {
   if (data && data.url) {
     const formatStr = format.reduce((prev, current) => {
@@ -37,6 +38,17 @@ export function beforeUploadCheck (file: File, condition: CheckCondition) {
     passed: isValidSize && isValidFormat,
     error
   }
+}
+export const commonUploadCheck = (file: File) => {
+  const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
+  const { passed, error } = result
+  if (error === 'format') {
+    createMessage('上传图片只能是 JPG/PNG 格式!', 'error', 2000)
+  }
+  if (error === 'size') {
+    createMessage('上传图片大小不能超过 1Mb', 'error', 2000)
+  }
+  return passed
 }
 interface TestProps {
   _id: string;

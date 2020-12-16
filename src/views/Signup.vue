@@ -109,7 +109,17 @@ export default defineComponent({
           setTimeout(() => {
             router.push('/login')
           }, 1000)
-        }).catch(e => console.log(e))
+        }).catch(e => {
+          console.log(e)
+          if (e.code === 400) {
+            createMessage(e.error, 'error', 1000)
+          } else if (e.code === 500) {
+            createMessage('注册成功,即将跳转登录页面,500', 'success', 1500)
+            setTimeout(() => {
+              router.push('/login')
+            }, 1500)
+          }
+        })
       }
     }
     return {

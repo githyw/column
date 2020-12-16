@@ -43,6 +43,7 @@
           v-model="contentVal"
         />
       </div>
+      <span class="btn btn-primary btn-block btn-large" @click="ClickBack">返回</span>
       <template #submit>
         <button type="submit" class="btn btn-primary btn-block btn-large w-330">{{isEditMode? '更新文章' : '发布文章'}}</button>
       </template>
@@ -154,6 +155,9 @@ export default defineComponent({
       }
       return passed
     }
+    const ClickBack = () => {
+      router.go(-1)
+    }
     return {
       onFormSubmit,
       titleRules,
@@ -164,7 +168,8 @@ export default defineComponent({
       onFileUploaded,
       uploadCheck,
       handleFileUploaded,
-      isEditMode
+      isEditMode,
+      ClickBack
     }
   }
 })

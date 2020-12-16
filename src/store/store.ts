@@ -49,13 +49,25 @@ export interface GlobalErrorProps {
 interface ListProps<P> {
   [id: string]: P;
 }
+// columns接口定义
+export interface GlobalColumnsProps {
+  data: ListProps<ColumnlProps>;
+  currentPage: number;
+  total: number;
+}
+// posts接口定义
+export interface GlobalPostsProps {
+  data: ListProps<PostProps>;
+  loadedColumns: ListProps<{total?: number; currentPage?: number}>;
+  islastPage: boolean;
+}
 // 定义vuex数据接口的类型
 export interface GlobalDataProps {
   error: GlobalErrorProps;
   token: string;
   Loading: boolean;
-  columns: { data: ListProps<ColumnlProps>; currentPage: number; total: number };
-  posts: { data: ListProps<PostProps>; loadedColumns: string[] };
+  columns: GlobalColumnsProps;
+  posts: GlobalPostsProps;
   user: UserProps;
 }
 // 封装一个请求函数,通过method控制获取的是post请求还是get请求默认get请求
@@ -79,7 +91,7 @@ const store = createStore<GlobalDataProps>({
     // 首页数据信息展示
     columns: { data: {}, currentPage: 0, total: 0 },
     // 每个单独页面的数据
-    posts: { data: {}, loadedColumns: [] },
+    posts: { data: {}, loadedColumns: {}, islastPage: true },
     // 控制登录按钮
     user: { isLogin: false }
   },
@@ -91,20 +103,36 @@ const store = createStore<GlobalDataProps>({
     fetchColumns (state, rawData) {
       const { data } = state.columns
       const { list, count, currentPage } = rawData.data
-      state.columns = {
-        data: { ...data, ...arrToObj(list) },
-        total: count,
-        currentPage: currentPage * 1
+      console.log(rawData)
+      if (list.length === 0) {
+        state.posts.islastPage = false
+      } else {
+        state.columns = {
+          data: { ...data, ...arrToObj(list) },
+          total: count,
+          currentPage: currentPage * 1
+        }
+        state.posts.islastPage = true
       }
-      // state.columns.data = arrToObj(rawData.data.list)
-      // state.columns.isLoaded = true
     },
     fetchColumn (state, rawData) {
       state.columns.data[rawData.data._id] = rawData.data
     },
-    fetchPosts (state, { data: rawData, extraData: columnId }) {
-      state.posts.data = { ...state.posts.data, ...arrToObj(rawData.data.list) }
-      state.posts.loadedColumns.push(columnId)
+    fetchPosts (state, { data: rawData, extraData }) {
+      console.log(rawData)
+      const { count, currentPage, list } = rawData.data
+      const { loadedColumns, data } = state.posts
+      console.log(list)
+      if (list.length === 0) {
+        state.posts.islastPage = false
+      } else {
+        state.posts.data = { ...data, ...arrToObj(list) }
+        state.posts.islastPage = true
+      }
+      loadedColumns[extraData] = {
+        total: count,
+        currentPage
+      }
     },
     fetchPost (state, rawData) {
       state.posts.data[rawData.data._id] = rawData.data
@@ -134,6 +162,12 @@ const store = createStore<GlobalDataProps>({
       localStorage.setItem('token', token)
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
+    updateColumn (state, { data }) {
+      state.columns.data[data._id] = data
+    },
+    updateUser (state, { data }) {
+      state.user = { isLogin: true, ...data }
+    },
     // 退出登陆时清除token并清除浏览器缓存中的token
     logout (state) {
       state.token = ''
@@ -144,6 +178,7 @@ const store = createStore<GlobalDataProps>({
   actions: {
     fetchColumns ({ state, commit }, params = {}) {
       const { currentPage = 1, pageSize = 6 } = params
+      console.log(params)
       if (state.columns.currentPage < currentPage) {
         return asyncAndCOmmit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
       }
@@ -153,10 +188,15 @@ const store = createStore<GlobalDataProps>({
         return asyncAndCOmmit(`/columns/${cid}`, 'fetchColumn', commit)
       }
     },
-    fetchPosts ({ state, commit }, cid) {
-      if (!state.posts.loadedColumns.includes(cid)) {
-        return asyncAndCOmmit(`/columns/${cid}/posts`, 'fetchPosts', commit, { method: 'get' }, cid)
+    fetchPosts ({ state, commit }, params = {}) {
+      const { loadedColumns } = state.posts
+      const { cid, currentPage = 1, pageSize = 5 } = params
+      const loadedCurrentPage = (loadedColumns[cid] && loadedColumns[cid].currentPage) || 0
+      if (!Object.keys(loadedColumns).includes(cid) || loadedCurrentPage < currentPage) {
+        return asyncAndCOmmit(`/columns/${cid}/posts?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchPosts', commit, { method: 'get' }, cid)
       }
+      console.log(state.posts.loadedColumns)
+      console.log(params)
     },
     fetchPost ({ state, commit }, cid) {
       const currentPost = state.posts.data[cid]
@@ -173,6 +213,12 @@ const store = createStore<GlobalDataProps>({
         method: 'patch',
         data: payload
       })
+    },
+    updateColumn ({ commit }, { id, payload }) {
+      return asyncAndCOmmit(`/columns/${id}`, 'updateColumn', commit, { method: 'patch', data: payload })
+    },
+    updateUser ({ commit }, { id, payload }) {
+      return asyncAndCOmmit(`/user/${id}`, 'updateUser', commit, { method: 'patch', data: payload })
     },
     fetchCurrentUser ({ commit }) {
       return asyncAndCOmmit('/user/current', 'fetchCurrentUser', commit)

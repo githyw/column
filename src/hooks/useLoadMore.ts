@@ -5,12 +5,13 @@ interface LoadParms {
   currentPage: number;
   pageSize: number;
 }
-const useLoadMore = (actionName: string, total: ComputedRef<number>, params: LoadParms = { currentPage: 2, pageSize: 5 }) => {
+const useLoadMore = (actionName: string, total: ComputedRef<number>, params: LoadParms = { currentPage: 2, pageSize: 5 }, cid?: string) => {
   const store = useStore()
   const currentPage = ref(params.currentPage)
   const requestParams = computed(() => ({
     currentPage: currentPage.value,
-    pageSize: params.pageSize
+    pageSize: params.pageSize,
+    cid: cid
   }))
   const loadMorePage = () => {
     store.dispatch(actionName, requestParams.value).then(() => {
@@ -18,7 +19,7 @@ const useLoadMore = (actionName: string, total: ComputedRef<number>, params: Loa
     })
   }
   const islastPage = computed(() => {
-    return Math.ceil(total.value / params.pageSize) < currentPage.value
+    return Math.ceil(total.value / params.pageSize) <= currentPage.value
   })
   return {
     islastPage,

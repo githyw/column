@@ -35,4 +35,7 @@ export default defineComponent({
     text-decoration: none;
     color: black;
   }
+  .tdn:hover{
+    color: red;
+  }
 </style>
