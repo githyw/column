@@ -1,6 +1,7 @@
 import { createStore, Commit } from 'vuex'
 import axios, { AxiosRequestConfig } from 'axios'
 import { arrToObj, objToArr } from '@/hooks/helper'
+import createMessage from '@/hooks/createMessage'
 export interface ResponseType<P = {}> {
   code: number;
   msg: string;
@@ -106,6 +107,7 @@ const store = createStore<GlobalDataProps>({
       console.log(rawData)
       if (list.length === 0) {
         state.posts.islastPage = false
+        createMessage('已经全部加载完毕', 'success', 2000)
       } else {
         state.columns = {
           data: { ...data, ...arrToObj(list) },
@@ -125,6 +127,7 @@ const store = createStore<GlobalDataProps>({
       console.log(list)
       if (list.length === 0) {
         state.posts.islastPage = false
+        createMessage('已经全部加载完毕', 'success', 2000)
       } else {
         state.posts.data = { ...data, ...arrToObj(list) }
         state.posts.islastPage = true

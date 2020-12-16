@@ -1,6 +1,10 @@
 <template>
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
-    <router-link class="navbar-brand" to="/">首页</router-link>
+    <router-link class="navbar-brand" to="/">博客</router-link>
+    <ul class="ul-li" v-if="!user.isLogin">
+      <li>测试账号:111@test.com</li>
+      <li>测试密码:111111</li>
+    </ul>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item"><router-link to="/login" class="btn btn-outline-light my-2">登录</router-link></li>
       <li class="list-inline-item"><router-link to="/signup" class="btn btn-outline-light my-2">注册</router-link></li>
@@ -55,5 +59,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.ul-li li{
+  list-style-type: none;
+  color: #ffffff;
+  text-align: left;
+}
 </style>
