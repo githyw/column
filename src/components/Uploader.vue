@@ -42,21 +42,22 @@ export default defineComponent({
   emits: ['file-uploaded', 'file-upload-error'],
   inheritAttrs: false,
   setup (props, content) {
+    // 获取到上传组件的ref
     const fileInput = ref<null | HTMLInputElement>(null)
-    console.log(props.uploaded)
     const fileStatus = ref<UploadStatus>(props.uploaded ? 'success' : 'ready')
     const uploadedData = ref()
+    // 将div的点击事件转移到file上传的点击事件上
     const triggerUpload = () => {
       if (fileInput.value) {
         fileInput.value.click()
       }
     }
+    // 监控uploaded的变化,如果有图片存在 并且传了进来 那么赋值给uploadedData.value
     watch(() => props.uploaded, (newValue) => {
       if (newValue) {
         fileStatus.value = 'success'
         uploadedData.value = newValue
       }
-      console.log(newValue)
     })
     const handleFileChange = (e: Event) => {
       const currentTarget = e.target as HTMLInputElement
@@ -79,7 +80,6 @@ export default defineComponent({
           }).then(e => {
             fileStatus.value = 'success'
             uploadedData.value = e.data
-            console.log(e.data.data.url)
             content.emit('file-uploaded', e.data)
           }).catch((error) => {
             fileStatus.value = 'error'

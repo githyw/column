@@ -44,7 +44,6 @@ export default defineComponent({
   },
   setup (props) {
     const store = useStore()
-    console.log(props.user)
     const offClick = () => {
       store.state.user.isLogin = false
       store.state.token = ''

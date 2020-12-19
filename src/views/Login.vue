@@ -82,7 +82,6 @@ export default defineComponent({
           password: passwordVal.value
         }
         store.dispatch('loginAndFetch', payload).then((e) => {
-          console.log(e.data.column)
           content.emit('login', e.data.column)
           createMessage('登录成功,即将跳转到首页', 'success', 1000)
           setTimeout(() => {

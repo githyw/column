@@ -77,6 +77,7 @@ export default defineComponent({
   setup () {
     const store = useStore()
     const router = useRouter()
+    // 通过value的值判断获取user还是column的图片的url
     const currentCategory = ref<EditCategory>('init')
     const generateActiveClass = (klass: EditCategory) => {
       return {
@@ -87,21 +88,25 @@ export default defineComponent({
     const userStore = computed(() => store.state.user)
     const uploadedData = ref()
     const currentColumn = computed(() => store.getters.getColumnById(userStore.value.column))
+    // 监控currentCategory,值发生改变则调用第二个函数
     watch(currentCategory, () => {
       if (currentCategory.value === 'profile') {
         if (userStore.value && userStore.value.avatar) {
           const { avatar } = userStore.value
+          // 将user的图片和id赋值给uploadedData
           uploadedData.value = { data: avatar }
         }
       } else {
         if (currentColumn.value && currentColumn.value.avatar) {
           const { avatar } = currentColumn.value
+          // 将column的图片和id赋值给uploadedData
           uploadedData.value = { data: avatar }
         } else {
           uploadedData.value = null
         }
       }
     })
+    // 以下操作和上述一样
     const nameValue = ref(userStore.value && userStore.value.nickName)
     const descValue = ref(userStore.value && userStore.value.description)
     const switchTab = (which: EditCategory) => {
@@ -154,6 +159,7 @@ export default defineComponent({
         if (imageId) {
           payload.avatar = imageId
         }
+        // 三元表达式 判断currentCategory的值是否为profile 为true则执行updateUser 为false则执行updateColumn
         const actionName = currentCategory.value === 'profile' ? 'updateUser' : 'updateColumn'
         const sendData = currentCategory.value === 'profile' ? {
           id: userStore.value._id,

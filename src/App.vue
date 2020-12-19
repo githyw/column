@@ -14,15 +14,17 @@
         <li class="list-inline-item">₢ 2020 博客专栏 丨</li>
         <li class="list-inline-item">豫ICP备2020033329号-1</li>
         <li class="list-inline-item">文档</li>
-        <li class="list-inline-item font-size" @click="contactClick">联系方式</li>
+        <li class="list-inline-item font-size tdn" @click="contactClick">联系方式</li>
+        <li class="list-inline-item"><a href="https://github.com/githyw/column" class="tdn">GitHub</a></li>
         <li class="list-inline-item">更多</li>
       </ul>
     </small>
   </footer>
   <Modal :visible="contact" title="联系方式(非诚勿扰)" @modal-on-confirm="contactClick" @modal-on-close="contactClick">
+    <div class="auto">我欲寻一伯乐</div>
     <p>电话：15537751057</p>
     <p>邮箱：961406169@qq.com</p>
-    <p class="noEpiboly">不考虑外包公司</p>
+    <p class="noEpiboly">外包勿扰，谢谢</p>
   </Modal>
 </template>
 <script lang="ts">
@@ -55,7 +57,6 @@ export default defineComponent({
     })
     const contactClick = () => {
       contact.value = !contact.value
-      console.log(111)
     }
     return {
       currentUser,
@@ -69,6 +70,9 @@ export default defineComponent({
 </script>
 
 <style>
+  .auto{
+    text-align: center;
+  }
   .font-size{
     font-weight: 700;
     cursor: pointer;
@@ -76,9 +80,17 @@ export default defineComponent({
   li{
     list-style-type: none;
   }
+  .tdn{
+    text-decoration: none;
+    color: #6c757d;
+    font-weight: 700;
+  }
   .noEpiboly{
     font-style: italic;
     font-weight: 700;
     font-size: 12px;
+  }
+  .tdn:hover{
+    color: red;
   }
 </style>

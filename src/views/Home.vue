@@ -28,9 +28,11 @@ export default defineComponent({
     const total = computed(() => store.state.columns.total)
     const islastPage = computed(() => store.state.posts.islastPage)
     onMounted(() => {
-      store.dispatch('fetchColumns', { pageSize: 6 })
+      // 首次加载时显示的页数
+      store.dispatch('fetchColumns')
     })
     const list = computed(() => store.getters.getColumns)
+    // 点击加载更多时的加载页数和数量
     const { loadMorePage } = useLoadMore('fetchColumns', total, { currentPage: (currentPage.value ? currentPage.value + 1 : 3), pageSize: 3 })
     return {
       list,

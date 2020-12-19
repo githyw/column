@@ -54,7 +54,7 @@ interface TestProps {
   _id: string;
   name: string;
 }
-const testData: TestProps[] = [{ _id: '1', name: 'a' }, { _id: '2', name: 'b' }]
+// 数据转换 数组格式转换为对象格式
 export const arrToObj = <T extends { _id?: string }>(arr: Array<T>) => {
   return arr.reduce((prev, current) => {
     if (current._id) {
@@ -63,14 +63,7 @@ export const arrToObj = <T extends { _id?: string }>(arr: Array<T>) => {
     return prev
   }, {} as { [key: string]: T })
 }
-const result = arrToObj(testData)
-console.log(result)
-const testData2: {[key: string]: TestProps} = {
-  1: { _id: '1', name: '1' },
-  2: { _id: '2', name: '2' }
-}
+// 数据转换 对象格式转换为数组格式
 export const objToArr = <T>(obj: {[key: string]: T}) => {
   return Object.keys(obj).map(key => obj[key])
 }
-const result2 = objToArr(testData2)
-console.log(result2)

@@ -43,9 +43,11 @@
           v-model="contentVal"
         />
       </div>
-      <span class="btn btn-primary btn-block btn-large" @click="ClickBack">返回</span>
       <template #submit>
         <button type="submit" class="btn btn-primary btn-block btn-large w-330">{{isEditMode? '更新文章' : '发布文章'}}</button>
+      </template>
+      <template #return>
+        <span class="btn btn-secondary right" @click="ClickBack">返回</span>
       </template>
     </validate-form>
   </div>
@@ -83,49 +85,10 @@ export default defineComponent({
     const contentRules: RulesProp = [
       { type: 'content', message: '文章详情不能为空' }
     ]
-    const columns = store.state.columns
-    console.log(columns)
-
     // 获取照片id展示图片
     const handleFileUploaded = (rawData: ResponseType<ImageProps>) => {
       if (rawData.data._id) {
         imageID = rawData.data._id
-      }
-    }
-    const onFormSubmit = (result: boolean) => {
-      if (result) {
-        // 将用户id(_id) 和页面id(column)
-        const { column, _id } = store.state.user
-        console.log(column + '-------' + _id)
-        if (column) {
-          const newPost: PostProps = {
-            title: titleVal.value,
-            content: contentVal.value,
-            column,
-            author: _id
-          }
-          if (imageID) {
-            newPost.image = imageID
-            console.log(imageID)
-          }
-          // 新建文章提交数据 if === createPost则提交新数据 esle === updatePost则更新数据
-          const actionName = isEditMode ? 'updatePost' : 'createPost'
-          const sendData = isEditMode ? {
-            id: route.query.id,
-            payload: newPost
-          } : newPost
-          store.dispatch(actionName, sendData).then((e) => {
-            console.log(e)
-            createMessage('发表成功，即将跳转到文章', 'success', 1000)
-            setTimeout(() => {
-              router.push({ name: 'column', params: { id: column } })
-            }, 1000)
-          }).catch(e => {
-            console.log(e)
-            console.log(actionName)
-            console.log(sendData)
-          })
-        }
       }
     }
     onMounted(() => {
@@ -140,9 +103,36 @@ export default defineComponent({
         })
       }
     })
-    const onFileUploaded = (rawData: ResponseType<ImageProps>) => {
-      createMessage('图片上传成功', 'success', 2000)
-      console.log(rawData)
+    const onFormSubmit = (result: boolean) => {
+      if (result) {
+        // 将用户id(_id) 和页面id(column)取出来
+        const { column, _id } = store.state.user
+        if (column) {
+          const newPost: PostProps = {
+            title: titleVal.value,
+            content: contentVal.value,
+            column,
+            author: _id
+          }
+          if (imageID) {
+            newPost.image = imageID
+          }
+          // 新建文章提交数据 if === createPost则提交新数据 else === updatePost则更新数据
+          const actionName = isEditMode ? 'updatePost' : 'createPost'
+          const sendData = isEditMode ? {
+            id: route.query.id,
+            payload: newPost
+          } : newPost
+          store.dispatch(actionName, sendData).then(() => {
+            createMessage('发表成功，即将跳转到文章', 'success', 1000)
+            setTimeout(() => {
+              router.push({ name: 'column', params: { id: column } })
+            }, 1000)
+          }).catch(e => {
+            console.log(e)
+          })
+        }
+      }
     }
     const uploadCheck = (file: File) => {
       const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
@@ -165,7 +155,6 @@ export default defineComponent({
       contentVal,
       titleVal,
       uploadedData,
-      onFileUploaded,
       uploadCheck,
       handleFileUploaded,
       isEditMode,
@@ -176,6 +165,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+  .right{
+    margin-left: 30px;
+  }
   .w-330 {
     width: 330px;
   }

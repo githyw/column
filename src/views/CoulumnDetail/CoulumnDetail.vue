@@ -5,10 +5,10 @@
       <span class="bgc-b">首页专栏</span>
     </div>
     <div class="row pb-5 shadow-sm p-3 mb-5 bg-white rounded">
-      <div class="col-3"><img :src="column.avatar && column.avatar.fitUrl" :alt="column.title" class=" rounded-circle rounded-lg imgborder w-100"></div>
+      <div class="col-3"><img :src="column.value.avatar && column.value.avatar.fitUrl" :alt="column.title" class=" rounded-circle rounded-lg imgborder w-100"></div>
       <div class="mt-3 col-9">
-        <h4>{{column.title}}</h4>
-        <p>{{column.description}}</p>
+        <h4>{{column.value.title}}</h4>
+        <p>{{column.value.description}}</p>
       </div>
     </div>
     <posh-list :list="list" ></posh-list>
@@ -18,7 +18,7 @@
 
 <script lang='ts'>
 // 单页面数据的 title
-import { defineComponent, computed, onMounted } from 'vue'
+import { defineComponent, computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import PoshList from './PoshList.vue'
 import { useRoute } from 'vue-router'
@@ -34,25 +34,21 @@ export default defineComponent({
     const route = useRoute()
     const store = useStore()
     const currentId = route.params.id
-    const User = computed(() => store.state.user)
     const total = computed(() => store.state.posts.total)
     const currentPage = computed(() => store.state.posts.currentPage)
     const islastPage = computed(() => store.state.posts.islastPage)
-    console.log(User)
-    console.log(route)
+    const selectColumn = ref()
     onMounted(() => {
       store.dispatch('fetchColumn', currentId)
-      store.dispatch('fetchPosts', { cid: currentId, pageSize: 5 })
+      store.dispatch('fetchPosts', { cid: currentId })
     })
     const column = computed(() => {
-      const selectColumn = store.getters.getColumnById(currentId) as ColumnlProps | undefined
-      console.log(selectColumn)
-      if (selectColumn) {
-        addColumnAvatar(selectColumn, 100, 100)
+      selectColumn.value = store.getters.getColumnById(currentId) as ColumnlProps | undefined
+      if (selectColumn.value) {
+        addColumnAvatar(selectColumn.value, 100, 100)
       }
       return selectColumn
     })
-    console.log(currentId)
     const list = computed(() => store.getters.getPortById(currentId))
     const { loadMorePage } = useLoadMore('fetchPosts', total, { currentPage: (currentPage.value ? currentPage.value + 1 : 2), pageSize: 5 }, `${currentId}`)
     return {

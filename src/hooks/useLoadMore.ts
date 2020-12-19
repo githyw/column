@@ -5,6 +5,7 @@ interface LoadParms {
   currentPage: number;
   pageSize: number;
 }
+// 负责控制加载页面的页数也数量
 const useLoadMore = (actionName: string, total: ComputedRef<number>, params: LoadParms = { currentPage: 2, pageSize: 5 }, cid?: string) => {
   const store = useStore()
   const currentPage = ref(params.currentPage)

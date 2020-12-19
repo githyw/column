@@ -34,9 +34,11 @@ export default defineComponent({
   emits: ['modal-on-close', 'modal-on-confirm'],
   setup (props, content) {
     useDOMCreate('modal')
+    // 点击取消按钮 发送事件
     const onClose = () => {
       content.emit('modal-on-close')
     }
+    // 点击确定按钮 发送事件
     const onConfirm = () => {
       content.emit('modal-on-confirm')
     }

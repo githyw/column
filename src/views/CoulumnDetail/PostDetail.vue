@@ -34,10 +34,10 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, onMounted, computed, ref } from 'vue'
+import { defineComponent, onMounted, computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { UserProps, PostProps, ImageProps, ResponseType } from '@/store/store'
+import { PostProps, ImageProps, ResponseType } from '@/store/store'
 import MarkdownIt from 'markdown-it'
 import Modal from '@/components/Modal.vue'
 import createMessage from '@/hooks/createMessage'
@@ -54,27 +54,18 @@ export default defineComponent({
     const currentId = route.params.id
     const modalIsVisible = ref(false)
     const User = computed(() => store.state.user)
-    console.log(User)
     onMounted(() => {
-      store.dispatch('fetchPost', currentId).then(e => {
-        console.log(e)
-        console.log(111)
-        console.log(currentId)
-      }).catch(e => console.log('2:' + e))
+      store.dispatch('fetchPost', currentId)
     })
-    const posts = computed(() => store.getters.getPostById(currentId))
+    const posts = computed(() => store.getters.getPost(currentId))
     const currentHTML = computed(() => {
       const { content, isHTML } = posts.value
-      if (posts.value && posts.value.excerpt) {
-        return isHTML ? content : md.render(posts.value.excerpt)
+      if (posts.value && posts.value.content) {
+        return isHTML ? content : md.render(posts.value.content)
       }
     })
     const column = computed(() => store.getters.getColumnById(posts.value.column))
     const columnId = column.value._id
-    console.log(column)
-    console.log('post:' + currentId)
-    console.log('posts:' + posts.value)
-    console.log(posts)
     const currentImageUrl = computed(() => {
       if (posts.value && posts.value.image) {
         const { image } = posts.value
@@ -83,11 +74,11 @@ export default defineComponent({
         return null
       }
     })
-    console.log(currentImageUrl)
+    // 用于修改和删除按钮  在自己的专栏才会显示按钮
     const showEditArea = computed(() => {
       const { isLogin, _id } = User.value
       if (posts.value && posts.value.author && isLogin) {
-        const postAuthor = posts.value.author._id as UserProps
+        const postAuthor = posts.value.author
         return postAuthor === _id
       } else {
         return false
@@ -100,12 +91,14 @@ export default defineComponent({
         setTimeout(() => {
           if (rawData.data.column !== undefined) {
             router.push({ name: 'column', params: { id: rawData.data.column } })
+            // 用于跳转页面之后 刷新页面
+            watch(() => router.push({ name: 'column', params: { id: rawData.data.column as string } }), () => {
+              router.go(0)
+            })
           }
         }, 1000)
       })
     }
-    console.log(showEditArea.value)
-    console.log(User)
     return {
       posts,
       User,

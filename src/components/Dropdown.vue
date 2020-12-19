@@ -21,6 +21,7 @@ export default defineComponent({
   setup () {
     const isOpen = ref(false)
     const dropdownRef = ref<null | HTMLElement>(null)
+    // 控制用户展开栏是否隐藏或显示
     const toggleOpen = () => {
       isOpen.value = !isOpen.value
     }

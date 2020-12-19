@@ -71,6 +71,26 @@ export interface GlobalDataProps {
   posts: GlobalPostsProps;
   user: UserProps;
 }
+// 封装储存或取出浏览器数据的函数
+const sessSetAndGet = (key: string, value?: any) => {
+  if (!value) {
+    return JSON.parse(sessionStorage.getItem(key) as string)
+  } else {
+    return sessionStorage.setItem(key, JSON.stringify(value))
+  }
+}
+// 将author的对象数据转为纯id的字符串
+const authorToId = (state: any, data: any) => {
+  if (data && data.author._id) {
+    const { _id } = data.author
+    data.author = _id
+    state.posts.data[data._id] = data
+    sessSetAndGet('fetchPost', state.posts.data)
+  } else {
+    state.posts.data[data._id] = data
+    sessSetAndGet('fetchPost', state.posts.data)
+  }
+}
 // 封装一个请求函数,通过method控制获取的是post请求还是get请求默认get请求
 const asyncAndCOmmit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }, extraData?: any) => {
   const { data } = await axios(url, config)
@@ -97,14 +117,23 @@ const store = createStore<GlobalDataProps>({
     user: { isLogin: false }
   },
   mutations: {
-    createPost (state, newPost) {
-      state.posts.data[newPost._id] = newPost
-      console.log(newPost.data)
+    // 新建文章提交的数据
+    createPost (state, { data }) {
+      if (data.author && data.author.avatar) {
+        const { _id } = data.author
+        data.author = _id
+        state.posts.data[data._id] = data
+        sessSetAndGet('fetchPosts', state.posts.data)
+        sessSetAndGet('fetchPost', state.posts.data)
+      } else {
+        state.posts.data[data._id] = data
+        sessSetAndGet('fetchPosts', state.posts.data)
+        sessSetAndGet('fetchPost', state.posts.data)
+      }
     },
     fetchColumns (state, rawData) {
       const { data } = state.columns
       const { list, count, currentPage } = rawData.data
-      console.log(rawData)
       if (list.length === 0) {
         state.posts.islastPage = false
         createMessage('已经全部加载完毕', 'success', 2000)
@@ -115,37 +144,41 @@ const store = createStore<GlobalDataProps>({
           currentPage: currentPage * 1
         }
         state.posts.islastPage = true
+        if (state.columns) {
+          sessSetAndGet('fetchColumns', state.columns.data)
+        }
       }
     },
-    fetchColumn (state, rawData) {
-      state.columns.data[rawData.data._id] = rawData.data
+    fetchColumn (state, { data }) {
+      state.columns.data[data._id] = data
     },
     fetchPosts (state, { data: rawData, extraData }) {
-      console.log(rawData)
       const { count, currentPage, list } = rawData.data
       const { loadedColumns, data } = state.posts
-      console.log(list)
       if (list.length === 0) {
         state.posts.islastPage = false
         createMessage('已经全部加载完毕', 'success', 2000)
       } else {
         state.posts.data = { ...data, ...arrToObj(list) }
         state.posts.islastPage = true
+        if (state.posts.data) {
+          sessSetAndGet('fetchPosts', state.posts.data)
+          sessSetAndGet('fetchPost', state.posts.data)
+        }
       }
       loadedColumns[extraData] = {
         total: count,
         currentPage
       }
     },
-    fetchPost (state, rawData) {
-      state.posts.data[rawData.data._id] = rawData.data
+    fetchPost (state, { data }) {
+      authorToId(state, data)
     },
     deletePost (state, { data }) {
       delete state.posts.data[data._id]
     },
     updatePost (state, { data }) {
-      console.log(data)
-      state.posts.data[data._id] = data
+      authorToId(state, data)
     },
     // 控制加载页面动画
     setLoading (state, status) {
@@ -178,10 +211,10 @@ const store = createStore<GlobalDataProps>({
       delete axios.defaults.headers.commit.Authorization
     }
   },
+  // 通过异步获取数据，然后将数据发送到mutations进行数据处理
   actions: {
     fetchColumns ({ state, commit }, params = {}) {
       const { currentPage = 1, pageSize = 6 } = params
-      console.log(params)
       if (state.columns.currentPage < currentPage) {
         return asyncAndCOmmit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
       }
@@ -198,8 +231,6 @@ const store = createStore<GlobalDataProps>({
       if (!Object.keys(loadedColumns).includes(cid) || loadedCurrentPage < currentPage) {
         return asyncAndCOmmit(`/columns/${cid}/posts?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchPosts', commit, { method: 'get' }, cid)
       }
-      console.log(state.posts.loadedColumns)
-      console.log(params)
     },
     fetchPost ({ state, commit }, cid) {
       const currentPost = state.posts.data[cid]
@@ -211,15 +242,16 @@ const store = createStore<GlobalDataProps>({
     },
     // 更新文章单个页面数据
     updatePost ({ commit }, { id, payload }) {
-      console.log(id, payload)
       return asyncAndCOmmit(`/posts/${id}`, 'updatePost', commit, {
         method: 'patch',
         data: payload
       })
     },
+    // 更改编辑页面的columns数据
     updateColumn ({ commit }, { id, payload }) {
       return asyncAndCOmmit(`/columns/${id}`, 'updateColumn', commit, { method: 'patch', data: payload })
     },
+    // 更改编辑页面的user数据
     updateUser ({ commit }, { id, payload }) {
       return asyncAndCOmmit(`/user/${id}`, 'updateUser', commit, { method: 'patch', data: payload })
     },
@@ -233,9 +265,11 @@ const store = createStore<GlobalDataProps>({
     createPost ({ commit }, payload) {
       return asyncAndCOmmit('/posts', 'createPost', commit, { method: 'post', data: payload })
     },
+    // 删除文章请求
     deletePost ({ commit }, id) {
       return asyncAndCOmmit(`/posts/${id}`, 'deletePost', commit, { method: 'delete' })
     },
+    // login的token值验证成功之后再获取当前登录用户的信息
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
@@ -243,22 +277,28 @@ const store = createStore<GlobalDataProps>({
     }
   },
   getters: {
+    // 将columns.data的对象格式转化为数组格式
     getColumns: (state) => {
       return objToArr(state.columns.data)
     },
     // 通过id获取columns数据
     getColumnById: (state) => (id: string) => {
-      console.log(id)
-      console.log(state.columns.data)
+      state.columns.data = sessSetAndGet('fetchColumns')
       return state.columns.data[id]
     },
     // 通过columns的id获取所有posts的数据列表
     getPortById: (state) => (cid: string) => {
-      return objToArr(state.posts.data).filter(post => post.column === cid)
+      return objToArr(state.posts.data).filter(post => post.column === cid).sort((a, b) => {
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      })
     },
     // 通过id获取posts数据
     getPostById: (state) => (cid: string) => {
-      console.log(state.posts)
+      state.posts.data = sessSetAndGet('fetchPosts')
+      return state.posts.data[cid]
+    },
+    getPost: (state) => (cid: string) => {
+      state.posts.data = sessSetAndGet('fetchPost')
       return state.posts.data[cid]
     }
   }
