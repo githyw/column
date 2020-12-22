@@ -3,7 +3,7 @@
     <div v-for="column in columnList" :key="column._id" class="col-4 mb-4">
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
-          <img :src="column.avatar && column.avatar.url" class="rounded-circle border-light w-25 my-3" :alt="column.avatar">
+          <img :src="column.avatar && column.avatar.url" class="rounded-circle border-light w-25 my-3" :alt="column.avatar" style="user-select: none;">
           <h5 class="card-title">{{column.title}}</h5>
           <p class="card-text text-left">{{column.description}}</p>
           <router-link :to="`/Column/${column._id}`" class="btn btn-outline-primary" ref="ColumnId">进入专栏</router-link>

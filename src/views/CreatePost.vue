@@ -43,6 +43,8 @@
           v-model="contentVal"
         />
       </div>
+      <div class="d-flex justify-content-center">
+      </div>
       <template #submit>
         <button type="submit" class="btn btn-primary btn-block btn-large w-330">{{isEditMode? '更新文章' : '发布文章'}}</button>
       </template>

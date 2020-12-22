@@ -1,7 +1,10 @@
 <template>
   <div class="dropdown" ref="dropdownRef">
-    <a href="#" class="btn btn-outline-light my-2 dropdown-toggle" @click.prevent="toggleOpen">{{title}}</a>
-    <ul class="dropdown-menu" :style="{display: 'block'}" v-if="isOpen">
+    <div class="btn btn-outline-light my-2 dropdown-toggle" @click.prevent="toggleOpen">
+      <img :src="url" alt="" class="border">
+      <span>{{title}}</span>
+    </div>
+    <ul class="dropdown-menu dropdown-menu-lg-right width" :style="{display: 'block'}" v-if="isOpen">
       <slot></slot>
     </ul>
   </div>
@@ -16,6 +19,9 @@ export default defineComponent({
     title: {
       type: String,
       required: true
+    },
+    url: {
+      type: String
     }
   },
   setup () {
@@ -41,5 +47,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.border{
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20px;
+}
+  .dropdown-menu{
+    min-width: 8rem;
+  }
 </style>

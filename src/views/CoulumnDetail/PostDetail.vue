@@ -26,9 +26,10 @@
       <div class="text-size d-flex align-items-center style">发表于：{{posts.createdAt}}</div>
     </div>
     <div class="mt-4" v-html="currentHTML"></div>
-    <div v-if="showEditArea" class="btn-group mt-5">
-      <router-link :to="{name: 'create', query: { id: posts._id }}" class="btn btn-success">修改</router-link>
-      <router-link to="javascript:;" class="btn btn-danger" @click.prevent="modalIsVisible = true">删除</router-link>
+    <div class="btn-group mt-5">
+      <router-link :to="{name: 'create', query: { id: posts._id }}" v-if="showEditArea"  class="btn btn-success">修改</router-link>
+      <router-link to="javascript:;" class="btn btn-danger ml-1" v-if="showEditArea"  @click.prevent="modalIsVisible = true">删除</router-link>
+      <div class="btn btn-secondary ml-1" @click.prevent="ClickGo">返回</div>
     </div>
   </nav>
 </template>
@@ -99,6 +100,9 @@ export default defineComponent({
         }, 1000)
       })
     }
+    const ClickGo = computed(() => {
+      router.go(-1)
+    })
     return {
       posts,
       User,
@@ -108,7 +112,8 @@ export default defineComponent({
       currentImageUrl,
       modalIsVisible,
       hideAndDelete,
-      columnId
+      columnId,
+      ClickGo
     }
   }
 })

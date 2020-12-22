@@ -46,7 +46,7 @@
         </div>
       </div>
       <template #submit>
-        <button type="submit" class="btn btn-primary btn-block btn-large bes">注册</button>
+        <button type="submit" class="btn btn-primary btn-block btn-large bes w-300">注册</button>
       </template>
     </validate-form>
   </div>
@@ -136,6 +136,9 @@ export default defineComponent({
 <style scoped>
   .w-330 {
     width: 330px;
+  }
+  .w-300{
+    width: 300px !important;
   }
   .bes{
     width: 100%;

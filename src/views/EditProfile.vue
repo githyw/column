@@ -18,7 +18,7 @@
         </a>
       </li>
     </ul>
-    <h3>编辑个人资料</h3>
+    <h3>{{currentCategory === 'column'? '更改专栏信息' : '更新个人资料'}}</h3>
     <uploader
       action="/upload"
       class="d-flex justify-content-center bg-light text-secondary w-100 my-4"
@@ -186,7 +186,8 @@ export default defineComponent({
       onFormSubmit,
       generateActiveClass,
       switchTab,
-      uploadedData
+      uploadedData,
+      currentCategory
     }
   }
 })

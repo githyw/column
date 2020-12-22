@@ -11,7 +11,7 @@
     </ul>
     <ul v-else class="list-inline mb-0">
       <li class="list-inline-item">
-        <dropdown :title='`你好 ${user.nickName}`'>
+        <dropdown :title='`${user.nickName}`' :url="user.avatar && user.avatar.url">
           <dropdown-item><router-link to="/create" class="dropdown-item">新建文章</router-link></dropdown-item>
           <dropdown-item><router-link :to="`/Column/${user.column}`" class="dropdown-item">我的专栏</router-link></dropdown-item>
           <dropdown-item><router-link to="/edit" class="dropdown-item">编辑资料</router-link></dropdown-item>
@@ -23,7 +23,7 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, PropType, computed } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { useStore } from 'vuex'
 import Dropdown from './Dropdown.vue'
 import DropdownItem from './DropdownItem.vue'
@@ -42,7 +42,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup (props) {
+  setup () {
     const store = useStore()
     const offClick = () => {
       store.state.user.isLogin = false
@@ -63,4 +63,11 @@ export default defineComponent({
   color: #ffffff;
   text-align: left;
 }
+.dropdown-item:hover{
+  color: #ffffff;
+  background-color: #0d6efd;
+}
+  .dropdown-item{
+    text-align: center;
+  }
 </style>
