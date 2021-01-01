@@ -50,7 +50,7 @@
         v-model="descValue"
       />
       <template #submit>
-        <button type="submit" class="btn btn-primary btn-block btn-large w-330">提交修改</button>
+        <button type="submit" class="btn btn-outline-primary w-330" style="border-radius: 10px">提交修改</button>
       </template>
     </validate-form>
   </div>

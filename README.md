@@ -6,6 +6,7 @@
 * 使用模块化思想开发
 * 使用ESLint语法规范
 * 使用Axios进行数据获取
+* 使用vue-router进行路由跳转
 * 使用Vuex进行数据管理
 * 代码中含有清晰注释，方便阅读
 * 文章内容支持markdown格式
@@ -20,7 +21,7 @@
 ## 在线浏览地址
 
 
-> [点击浏览](http://keygit.com/)
+> [点击此处](https://keygit.com/)
 >
 > 测试账号 111@test.com
 >

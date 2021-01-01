@@ -34,18 +34,48 @@ export default defineComponent({
   .tdn{
     text-decoration: none;
     color: black;
+    border-radius: 20px;
+    animation: untdn 1s forwards;
   }
   .tdn:hover{
-    color: red;
+    animation: tdn 1s forwards;
+  }
+  .animation{
+    animation: unball .3s;
+    border-radius: 20px;
   }
   .animation:hover{
     animation: ball 1s forwards;
+  }
+  @keyframes tdn {
+    0%{}
+    100%{
+      box-shadow: 0px 7px 10px rgba(0,0,0,.2);
+    }
+  }
+  @keyframes untdn {
+    0%{
+      box-shadow: 0px 7px 10px rgba(0,0,0,.2);
+    }
+    100%{}
   }
   @keyframes ball {
     0% {
     }
     100% {
-      padding: 5px;
+      margin: 3px;
+      background-color: #e8f0f3;
+    }
+  }
+  @keyframes unball {
+    0% {
+      margin: 3px;
+      background-color: #e8f0f3;
+    }
+    70%{
+      border: 1px solid #a8c7fe;
+    }
+    100% {
     }
   }
 </style>

@@ -46,10 +46,10 @@
       <div class="d-flex justify-content-center">
       </div>
       <template #submit>
-        <button type="submit" class="btn btn-primary btn-block btn-large w-330">{{isEditMode? '更新文章' : '发布文章'}}</button>
+        <button type="submit" class="btn btn-outline-primary w-330" style="border-radius: 10px">{{isEditMode? '更新文章' : '发布文章'}}</button>
       </template>
       <template #return>
-        <span class="btn btn-secondary right" @click="ClickBack">返回</span>
+        <span class="btn btn-outline-dark right" @click="ClickBack" style="border-radius: 10px">返回</span>
       </template>
     </validate-form>
   </div>

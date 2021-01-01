@@ -1,11 +1,16 @@
 <template>
-  <div class="column-detail-page w-75 mx-auto container element" @scroll="scrollColumn">
+  <div class="column-detail-page w-75 mx-auto container element">
     <div class="bgc">
       <router-link to="/" class="bgc-a">首页</router-link> /
       <span class="bgc-b">首页专栏</span>
     </div>
     <div class="row pb-5 shadow-sm p-3 mb-5 bg-white rounded">
-      <div class="col-3"><img style="user-select: none;" :src="column.value.avatar && column.value.avatar.fitUrl" :alt="column.title" class=" rounded-circle rounded-lg imgborder w-100"></div>
+      <div class="col-3">
+        <img style="user-select: none;"
+             :src="column.value.avatar && column.value.avatar.fitUrl"
+             :alt="column.title"
+             class=" rounded-circle rounded-lg imgborder w-100">
+      </div>
       <div class="mt-3 col-9">
         <h4>{{column.value.title}}</h4>
         <p>{{column.value.description}}</p>
@@ -13,10 +18,18 @@
     </div>
     <posh-list :list="list" style="user-select: none;"></posh-list>
     <button class="btn btn-outline-primary my-2 mb-5 btn-block w-25 mx-auto d-flex justify-content-center" @click="loadMorePage" v-if="islastPage">加载更多</button>
-    <div class="toTopImage" v-if="show">
-      <img src="@/assets/top.png" alt="" @click="clickImage">
+    <router-link to="/" class="toHomeImage" v-if="show">
+      <div>
+        <img src="@/assets/Home.png" alt="">
+      </div>
+      <div class="logoToHomeImage"/>
+    </router-link>
+    <div class="toTopImage" v-if="show" @click="clickImage">
+      <div>
+        <img src="@/assets/top.png" alt="">
+      </div>
+      <div class="logoToTopImage"/>
     </div>
-    <div class="logoToTopImage" v-if="show" @click="clickImage"/>
   </div>
 </template>
 
@@ -25,7 +38,7 @@
 import { defineComponent, computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import PoshList from './PoshList.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ColumnlProps } from '@/store/store'
 import { addColumnAvatar } from '@/hooks/helper'
 import useLoadMore from '@/hooks/useLoadMore'
@@ -37,6 +50,7 @@ export default defineComponent({
   setup () {
     const route = useRoute()
     const store = useStore()
+    const router = useRouter()
     const currentId = route.params.id
     const total = computed(() => store.state.posts.total)
     const currentPage = computed(() => store.state.posts.currentPage)
@@ -56,6 +70,7 @@ export default defineComponent({
         }
       }, true)
     })
+    // 点击返回顶部
     const clickImage = () => {
       window.scrollTo({
         left: 0,
@@ -89,6 +104,7 @@ export default defineComponent({
     background-color: #ededed;
     padding: 10px 10px;
     margin-bottom: 10px;
+    border-radius: 10px;
   }
   .bgc-a{
     text-decoration: none;
@@ -105,24 +121,29 @@ export default defineComponent({
     width: 100%;
   }
   .toTopImage, .logoToTopImage{
+    bottom: 30px;
+  }
+  .toHomeImage, .logoToHomeImage{
+    bottom: 80px;
+  }
+  .toTopImage, .logoToTopImage, .toHomeImage, .logoToHomeImage{
     position: fixed;
     right: 40px;
-    bottom: 30px;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
     border-radius: 50%;
     padding: 6px;
     user-select: none;
   }
-  .logoToTopImage{
+  .logoToTopImage, .logoToHomeImage{
     border-bottom: 2px solid #0d6efd;
     animation: rotate 3s infinite linear;
   }
-  .logoToTopImage:hover{
+  .logoToTopImage:hover, .logoToHomeImage:hover{
     border: 2px solid #0d6efd;
   }
-  .toTopImage img{
+  .toTopImage img, .toHomeImage img{
     width: 100%;
   }
   @keyframes rotate {
