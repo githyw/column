@@ -121,16 +121,17 @@ export default defineComponent({
 
 <style scoped>
   .bgc{
-    background-color: #ededed;
+    background-color: #f0f0e3;
     padding: 10px 10px;
     margin-bottom: 10px;
+    border-radius: 10px;
   }
   .bgc-a{
     text-decoration: none;
     color: black;
   }
   .bgc-a:hover{
-    color: red;
+    color: #0d6efd;
   }
   .bgc-b{
     color: #cccccc;
@@ -150,8 +151,8 @@ export default defineComponent({
   .bdtb{
     overflow: hidden;
     *zoom: 1;
-    border-top: 1px solid #cccccc;
-    border-bottom: 1px solid #cccccc;
+    border-top: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
   }
   .text-size{
     color: #6c757d;

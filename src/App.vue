@@ -4,8 +4,8 @@
     <loader text="加载中..." v-if="isLoading"></loader>
     <router-view></router-view>
   </div>
-  <footer class="text-center py-4 text-secondary bg-light mt-auto">
-    <small class="list-inline mb-0">
+  <footer class="text-center py-4 text-secondary mt-auto">
+    <small class="list-inline mb-0" style="color: black">
       <ul>
         <li>目前状态：求职中...</li>
         <li>期望职位：web前端工程师</li>
@@ -21,9 +21,15 @@
     </small>
   </footer>
   <Modal :visible="contact" title="联系方式(非诚勿扰)" @modal-on-confirm="contactClick" @modal-on-close="contactClick">
-    <div class="auto">我欲寻一伯乐</div>
+    <p>姓名：郝*旺</p>
+    <p>性别：男</p>
     <p>电话：15537751057</p>
+    <p>微信：w961406169</p>
     <p>邮箱：961406169@qq.com</p>
+    <p>工作经验：一年（00后）</p>
+    <p>个人介绍：我个人十分热爱编程，希望能加入程序员的队伍当中，
+      可能我现在还有很多的不足之处，
+      但是我会克服困难、努力的提升自身的技术以备不时之需，唔----- 还有就是！有缘人终会相见。</p>
     <p class="noEpiboly">外包勿扰，谢谢</p>
   </Modal>
 </template>
@@ -70,6 +76,13 @@ export default defineComponent({
 </script>
 
 <style>
+  #app{
+    /*background-color: #e4ddd5;*/
+    /*animation: appBackgroundColor 10s linear infinite alternate;*/
+    background: url("assets/bg.jpg") 0px 0px repeat rgb(229, 230, 208);
+    /*background-color: #f5f5f5;*/
+    font-family: "Helvetica";
+  }
   .auto{
     text-align: center;
   }
@@ -82,7 +95,7 @@ export default defineComponent({
   }
   .tdn{
     text-decoration: none;
-    color: #6c757d;
+    color: black;
     font-weight: 700;
   }
   .noEpiboly{
@@ -91,6 +104,14 @@ export default defineComponent({
     font-size: 12px;
   }
   .tdn:hover{
-    color: red;
+    color: #0d6efd;
+  }
+  @keyframes appBackgroundColor {
+    0% {
+      background-color: #c4cfe2;
+    }
+    100%{
+      background-color: #d2c9da;
+    }
   }
 </style>

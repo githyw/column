@@ -4,7 +4,7 @@
       <router-link to="/" class="bgc-a">首页</router-link> /
       <span class="bgc-b">首页专栏</span>
     </div>
-    <div class="row pb-5 shadow-sm p-3 mb-5 bg-white rounded">
+    <div class="row pb-5 shadow-sm p-3 mb-5 bg-white rounded border">
       <div class="col-3">
         <img style="user-select: none;"
              :src="column.value.avatar && column.value.avatar.fitUrl"
@@ -101,17 +101,21 @@ export default defineComponent({
 
 <style scoped>
   .bgc{
-    background-color: #ededed;
+    background-color: #f0f0e3;
     padding: 10px 10px;
     margin-bottom: 10px;
     border-radius: 10px;
+  }
+  .border{
+    border-radius: 20px!important;
+    background-color: #f0f0e3 !important;
   }
   .bgc-a{
     text-decoration: none;
     color: black;
   }
   .bgc-a:hover{
-    color: red;
+    color: #0d6efd;
   }
   .bgc-b{
     color: #cccccc;

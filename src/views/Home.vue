@@ -5,7 +5,9 @@
       <div class="text" style="user-select: none;">随心写作，自由表达</div>
       <router-link class="btn btn-primary mt-4" to="/create">开始写文章</router-link>
     </div>
-    <h4 class="d-flex justify-content-center colorGradient " style="user-select: none;">发现精彩</h4>
+   <div class="colorGradient">
+     <h4 class="d-flex justify-content-center colorGradient-item " style="user-select: none;">发现精彩</h4>
+   </div>
     <coulmn-list :list='list'></coulmn-list>
   </div>
   <button class="btn btn-outline-primary my-2 mb-5 btn-block w-25 mx-auto d-flex justify-content-center" @click="loadMorePage" v-if="islastPage">加载更多</button>
@@ -51,15 +53,12 @@ export default defineComponent({
     margin-bottom: 100px;
   }
   .colorGradient{
-    animation: colorGradient 10s infinite alternate linear;
-    font-weight: 700;
+    width: 100%;
+    height: 30px;
+    margin-bottom: 7px;
   }
-  @keyframes colorGradient {
-    0%{
-      color: #a9d8f7;
-    }
-    100%{
-      color: #0f1b81;
-    }
+  .colorGradient-item{
+    position: relative;
+    font-weight: 700;
   }
 </style>

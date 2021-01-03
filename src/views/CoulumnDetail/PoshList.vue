@@ -36,6 +36,7 @@ export default defineComponent({
     color: black;
     border-radius: 20px;
     animation: untdn 1s forwards;
+    background-color: #f0f0e3;
   }
   .tdn:hover{
     animation: tdn 1s forwards;
@@ -51,11 +52,13 @@ export default defineComponent({
     0%{}
     100%{
       box-shadow: 0px 7px 10px rgba(0,0,0,.2);
+      background-color: #fafaf3;
     }
   }
   @keyframes untdn {
     0%{
       box-shadow: 0px 7px 10px rgba(0,0,0,.2);
+      background-color: #fafaf3;
     }
     100%{}
   }
@@ -63,14 +66,11 @@ export default defineComponent({
     0% {
     }
     100% {
-      margin: 3px;
-      background-color: #e8f0f3;
+      background-color: #fafaf3;
     }
   }
   @keyframes unball {
     0% {
-      margin: 3px;
-      background-color: #e8f0f3;
     }
     70%{
       border: 1px solid #a8c7fe;

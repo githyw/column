@@ -6,7 +6,7 @@
       :befor-upload="uploadCheck"
       @file-uploaded="handleFileUploaded"
       :uploaded="uploadedData"
-      class="d-flex justify-content-center bg-light text-secondary w-100 my-4"
+      class="d-flex justify-content-center text-secondary w-100 my-4 bgc"
     >
     <template #uploaded="dataProps">
       <img :src="dataProps.uploadedData.data.url" width="500" class="h-200">
@@ -167,6 +167,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+  .bgc{
+    background-color: #ededed !important;
+  }
   .right{
     margin-left: 30px;
   }

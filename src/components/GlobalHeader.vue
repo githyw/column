@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-dark bg-primary d-flex justify-content-between mb-4 px-4">
+  <nav class="navbar navbar-light d-flex justify-content-between mb-4 px-4" style="background-color: #666666;">
     <div class="d-flex justify-content-between">
       <router-link class="navbar-brand navbar-image" to="/">
         <h1 class="blogs">专栏博客</h1>
@@ -12,7 +12,7 @@
       </ul>
     </div>
     <ul v-if="!user.isLogin" class="list-inline mb-0 d-flex justify-content-between" style="user-select: none;">
-      <nav class="navbar navbar-dark bg-primary" v-if="inputSearch" ref="SearchRef">
+      <nav class="navbar navbar-light" v-if="inputSearch" ref="SearchRef">
         <input class="form-control mr-sm-2" id="search"
                type="search" placeholder="搜索" aria-label="Search"
                @blur="SearchBlur"
@@ -26,7 +26,7 @@
       <li class="list-inline-item"><router-link to="/signup" class="btn btn-outline-light my-2">注册</router-link></li>
     </ul>
     <ul v-else class="list-inline mb-0 d-flex justify-content-between" style="user-select: none;">
-      <nav class="navbar navbar-dark bg-primary" v-if="inputSearch" ref="SearchRef">
+      <nav class="navbar navbar-light" v-if="inputSearch" ref="SearchRef">
         <input class="form-control mr-sm-2"
                type="search" placeholder="搜索" aria-label="Search"
                @blur="SearchBlur"
