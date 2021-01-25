@@ -1,7 +1,7 @@
 <template>
-  <div class="post-list">
-    <article v-for="post in list" :key="post._id" class="card mb-3 shadow-sm animation">
-      <router-link :to="`/posts/${post._id}`" class="card-body tdn">
+  <div class="post-list justify-content-custom">
+    <article v-for="post in list" :key="post._id" class="col-5 m-2 tdn card mb-3 shadow-sm">
+      <router-link :to="`/posts/${post._id}`" class="card-body" style="text-decoration:none;">
         <span class="tdn"><h4>{{post.title}}</h4></span>
         <div class="row my-3 align-items-center">
           <div v-if="post.image" class="col-4">
@@ -32,50 +32,25 @@ export default defineComponent({
 
 <style scoped>
   .tdn{
+    width: 48%;
     text-decoration: none;
     color: black;
     border-radius: 20px;
-    animation: untdn 1s forwards;
     background-color: #f0f0e3;
+    transition: box-shadow 1s;
   }
   .tdn:hover{
-    animation: tdn 1s forwards;
+    border-left: 1px dashed #00adff;
+    border-right: 1px dashed red;
+    box-shadow: 0px 7px 15px 3px rgba(0,0,0,.3) !important;
+    transition: box-shadow .8s, border-left 1s, border-right 1s;
   }
-  .animation{
-    animation: unball .3s;
-    border-radius: 20px;
-  }
-  .animation:hover{
-    animation: ball 1s forwards;
-  }
-  @keyframes tdn {
-    0%{}
-    100%{
-      box-shadow: 0px 7px 10px rgba(0,0,0,.2);
-      background-color: #fafaf3;
-    }
-  }
-  @keyframes untdn {
-    0%{
-      box-shadow: 0px 7px 10px rgba(0,0,0,.2);
-      background-color: #fafaf3;
-    }
-    100%{}
-  }
-  @keyframes ball {
-    0% {
-    }
-    100% {
-      background-color: #fafaf3;
-    }
-  }
-  @keyframes unball {
-    0% {
-    }
-    70%{
-      border: 1px solid #a8c7fe;
-    }
-    100% {
-    }
+  .justify-content-custom{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x)/ -2);
+    margin-left: calc(var(--bs-gutter-x)/ -2);
+    justify-content:  space-between!important;
   }
 </style>

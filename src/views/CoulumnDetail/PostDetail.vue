@@ -11,10 +11,6 @@
       <router-link :to="`/column/${columnId}`" class="bgc-a">专栏首页 </router-link>/
       <span class="bgc-b">{{posts.title}}</span>
     </div>
-    <div v-if="posts.image">
-      <img :src="posts.image.url" :alt="posts.title" class="w-500">
-    </div>
-    <h3 class="my-4">{{posts.title}}</h3>
     <div class="py-4 my-3 bdtb">
       <div class="d-flex align-items-stretch">
         <img :src="column.avatar.url" :alt="column.title" class="rounded-circle rounded-lg imgborder mr-3">
@@ -23,9 +19,13 @@
           <div class="text-size">{{column.description}}</div>
         </div>
       </div>
-      <div class="text-size d-flex align-items-center style">发表于：{{posts.createdAt}}</div>
+    </div>
+    <h2 class="my-4">{{posts.title}}</h2>
+    <div v-if="posts.image">
+      <img :src="posts.image.url" :alt="posts.title" class="w-500">
     </div>
     <div class="mt-4" v-html="currentHTML"></div>
+    <div class="text-size style">发表于：{{posts.createdAt}}</div>
     <div class="btn-group mt-5">
       <router-link :to="{name: 'create', query: { id: posts._id }}" v-if="showEditArea"  class="btn btn-success">修改</router-link>
       <router-link to="javascript:;" class="btn btn-danger ml-1" v-if="showEditArea"  @click.prevent="modalIsVisible = true">删除</router-link>
@@ -120,6 +120,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+  .my-4{
+    font-weight: 700;
+  }
   .bgc{
     background-color: #f0f0e3;
     padding: 10px 10px;

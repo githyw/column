@@ -16,7 +16,8 @@
 1. git clone https://github.com/githyw/column.git
 2. cd column
 3. npm install
-4. npm run serve
+4. npm install bootstrap@next
+5. npm run serve
 
 ## 在线浏览地址
 

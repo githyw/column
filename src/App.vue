@@ -82,6 +82,8 @@ export default defineComponent({
     background: url("assets/bg.jpg") 0px 0px repeat rgb(229, 230, 208);
     /*background-color: #f5f5f5;*/
     font-family: "Helvetica";
+    height: 100%;
+    min-height: 1049px;
   }
   .auto{
     text-align: center;

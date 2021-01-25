@@ -1,19 +1,21 @@
 <template>
-  <div class="column-detail-page w-75 mx-auto container element">
-    <div class="bgc">
-      <router-link to="/" class="bgc-a">首页</router-link> /
-      <span class="bgc-b">首页专栏</span>
-    </div>
-    <div class="row pb-5 shadow-sm p-3 mb-5 bg-white rounded border">
-      <div class="col-3">
-        <img style="user-select: none;"
-             :src="column.value.avatar && column.value.avatar.fitUrl"
-             :alt="column.title"
-             class=" rounded-circle rounded-lg imgborder w-100">
+  <div class="column-detail-page container element">
+    <div class="w-75 mx-auto">
+      <div class="bgc">
+        <router-link to="/" class="bgc-a">首页</router-link> /
+        <span class="bgc-b">首页专栏</span>
       </div>
-      <div class="mt-3 col-9">
-        <h4>{{column.value.title}}</h4>
-        <p>{{column.value.description}}</p>
+      <div class="row pb-5 shadow-sm p-3 mb-5 bg-white rounded border">
+        <div class="col-3">
+          <img style="user-select: none;"
+               :src="column.value.avatar && column.value.avatar.fitUrl"
+               :alt="column.title"
+               class=" rounded-circle rounded-lg imgborder w-100">
+        </div>
+        <div class="mt-3 col-9">
+          <h4>{{column.value.title}}</h4>
+          <p>{{column.value.description}}</p>
+        </div>
       </div>
     </div>
     <posh-list :list="list" style="user-select: none;"></posh-list>
@@ -86,7 +88,7 @@ export default defineComponent({
       return selectColumn
     })
     const list = computed(() => store.getters.getPortById(currentId))
-    const { loadMorePage } = useLoadMore('fetchPosts', total, { currentPage: (currentPage.value ? currentPage.value + 1 : 2), pageSize: 5 }, `${currentId}`)
+    const { loadMorePage } = useLoadMore('fetchPosts', total, { currentPage: (currentPage.value ? currentPage.value + 1 : 2), pageSize: 4 }, `${currentId}`)
     return {
       list,
       column,

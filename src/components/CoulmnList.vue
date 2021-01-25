@@ -44,22 +44,12 @@ export default defineComponent({
   .card-body{
     animation: unlist 1s forwards;
     background-color: #f0f0e3;
+    transition:box-shadow 1s, background-color 1s;
   }
   .card-body:hover{
     animation: list 1s forwards;
-  }
-  @keyframes list {
-    0%{}
-    100%{
-      background-color: #fafaf3;
-      box-shadow: 0 7px 15px 3px rgba(0,0,0,.2);
-    }
-  }
-  @keyframes unlist {
-    0%{
-      box-shadow: 0 7px 15px 3px rgba(0,0,0,.2);
-    }
-    100%{
-    }
+    box-shadow: 0 7px 15px 3px rgba(0,0,0,.2);
+    background-color: #fafaf3;
+    transition:box-shadow 1s, background-color 1s;
   }
 </style>

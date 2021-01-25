@@ -12,7 +12,7 @@
       <img :src="dataProps.uploadedData.data.url" width="500" class="h-200">
     </template>
     <template #default>
-      <h2 class="file-upload h-200">点击上传头图</h2>
+      <h2 class="file-upload h-200">点击上传图片</h2>
     </template>
     <template #loading>
       <div class="d-flex">
@@ -46,7 +46,7 @@
       <div class="d-flex justify-content-center">
       </div>
       <template #submit>
-        <button type="submit" class="btn btn-outline-primary w-330" style="border-radius: 10px">{{isEditMode? '更新文章' : '发布文章'}}</button>
+        <button type="submit" class="btn btn-outline-primary w-330" style="border-radius: 10px">{{isEditMode? '修改文章' : '发布文章'}}</button>
       </template>
       <template #return>
         <span class="btn btn-outline-dark right" @click="ClickBack" style="border-radius: 10px">返回</span>

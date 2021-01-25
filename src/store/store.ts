@@ -226,7 +226,7 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPosts ({ state, commit }, params = {}) {
       const { loadedColumns } = state.posts
-      const { cid, currentPage = 1, pageSize = 5 } = params
+      const { cid, currentPage = 1, pageSize = 6 } = params
       const loadedCurrentPage = (loadedColumns[cid] && loadedColumns[cid].currentPage) || 0
       if (!Object.keys(loadedColumns).includes(cid) || loadedCurrentPage < currentPage) {
         return asyncAndCOmmit(`/columns/${cid}/posts?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchPosts', commit, { method: 'get' }, cid)
